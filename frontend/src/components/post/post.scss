@@ -58,7 +58,8 @@
           background-color: rgba(0, 0, 0, 0.458);
           width: 100%;
           max-height: 700px;
-          object-fit: scale-down;
+          //object-fit: scale-down;
+          object-fit: cover;
           margin-top: 10px;
         } 
         
