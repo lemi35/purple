@@ -28,29 +28,37 @@ const Register = () => {
         }, 3000)
     } 
 
-    const handleRegisterUser = async (e : React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        if (password != confirmPassword) {
-            handleErrorTimer("Passwords not matching.")
+    const handleRegisterUser = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        if (password !== confirmPassword) {
+            handleErrorTimer("Passwords not matching.");
             return;
         }
+
         try {
             const response = await fetch(`${baseurl}/auth/register`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"},
-                body: JSON.stringify({
-                    "username": username,
-                    "password": password
-                })
-            })
-            //const data = await response.json();
-            handleSuccessTimer()
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+            });
+
+            // Check if backend responded with success
+            if (!response.ok) {
+            const errorData = await response.json();
+            handleErrorTimer(errorData.message || "Registration failed.");
+            return;
+            }
+
+            const data = await response.json(); // actual response from backend
+            console.log("Registration response:", data);
+
+            handleSuccessTimer();
         } catch (error) {
-            console.log(error);
-            handleErrorTimer("An error happened during account creation.")
+            console.error(error);
+            handleErrorTimer("An error happened during account creation.");
         }
-    }
+        };
 
 
     return (

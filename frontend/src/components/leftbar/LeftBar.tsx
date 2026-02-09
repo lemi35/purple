@@ -16,8 +16,8 @@ import CommunityType from '../../types/CommunityType';
 const LeftBar = () => {
 
     const baseurl = "http://localhost:3001"
-    const [topics, setTopics] = useState([])
-    const [communities, setCommunities] = useState<CommunityType[]>([])
+    const [/*topics*/, setTopics] = useState([])
+    const [/*communities*/, setCommunities] = useState<CommunityType[]>([])
 
     useEffect(() => {
         const fetchTopics = async () => {

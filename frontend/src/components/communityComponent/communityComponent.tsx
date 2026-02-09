@@ -2,7 +2,7 @@ import { useContext } from "react";
 import "./communityComponent.scss";
 import { Link } from "react-router-dom";
 import userContext from "../../contexts/UserContext";
-import axios from "axios";
+//import axios from "axios";
 
 interface CommunityProps {
   community_id: number;
@@ -17,7 +17,6 @@ const CommunityComponent = ({
   name,
   description,
   image,
-  username,
 }: CommunityProps) => {
   const context = useContext(userContext);
   if (!context) {
@@ -27,7 +26,7 @@ const CommunityComponent = ({
   }
   //const { contextUsername, contextRole } = context;
 
-  const deleteCommunity = async () => {
+  /*const deleteCommunity = async () => {
     try {
       const deletedCommunity = await axios.delete(
         `http://localhost:3001/communities/${community_id}`,
@@ -36,6 +35,7 @@ const CommunityComponent = ({
       console.log(error);
     }
   };
+  */
 
   return (
     <div className="div-community-component">

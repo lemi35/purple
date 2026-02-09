@@ -1,11 +1,16 @@
 import ProfileUpdate from "../../components/profile/profileUpdate/ProfileUpdate"
+import  UserType  from "../../types/UserType";
 
-const modifyUser = () => {
-  return (
-    <div> 
-    <ProfileUpdate />
-    </div>
-  )
+interface ModifyUserProps {
+  currentUser: UserType;
 }
 
-export default modifyUser
+const modifyUser: React.FC<ModifyUserProps> = ({ currentUser }) => {
+  return (
+    <div>
+      <ProfileUpdate currentUser={currentUser} />
+    </div>
+  );
+};
+
+export default modifyUser;

@@ -9,7 +9,7 @@ const Login = () => {
     throw new Error("Login must be used within a userContext.Provider");
   }
 
-  const { contextUsername, setContextUsername, contextRole, setContextRole } = context;
+  const { /*contextUsername, contextRole,*/ setContextUsername, setContextRole } = context;
   const navigate = useNavigate();
   const baseurl = "http://localhost:3001";
 

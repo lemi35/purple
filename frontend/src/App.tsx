@@ -5,6 +5,7 @@ import {
 	Route,
 	Outlet,
 	useNavigate,
+	Navigate
 } from "react-router-dom";
 import LeftBar from "./components/leftbar/LeftBar";
 import NavBar from "./components/navbar/NavBar";
@@ -26,7 +27,7 @@ import Topic from "./pages/topic/Topic";
 import Community from "./pages/community/Community";
 import { UsersProvider } from "./contexts/UsersContext";
 import userContext from "./contexts/UserContext";
-import CommunityType from "./types/CommunityType";
+//import CommunityType from "./types/CommunityType";
 
 
 
@@ -36,13 +37,13 @@ function App() {
 
 	const [currentUser, setCurrentUser] = useState<UserType | null>(null);
 	const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
-	const [chatId, setChatId] = useState<string | null>(null);
-	const [users, setUsers] = useState<UserType[]>([]);
-	const [chats, setChats] = useState<ChatType[]>([]);
+	const [/*chatId*/, setChatId] = useState<string | null>(null);
+	const [users, /*setUsers*/] = useState<UserType[]>([]);
+	const [chats, /*setChats*/] = useState<ChatType[]>([]);
 	const [clickedUser, setClickedUser] = useState<UserType | null>(null);
 	const [contextUsername, setContextUsername] = useState(usernameFromCookie)
 	const [contextRole, setContextRole] = useState(roleFromCookie)
-	const [communities, setCommunities] = useState<CommunityType[]>([]);
+	//const [communities, setCommunities] = useState<CommunityType[]>([]);
 
 
 	const handleUserSelect = (user: UserType) => {
@@ -164,7 +165,12 @@ function App() {
 								element={<UserProfile user={clickedUser} />} />
 							<Route path="friends" element={<Friends user={clickedUser} />} />
 							<Route path="users" element={<Users onUserSelect={handleUserClick} /* user={currentUser} */ />} />
-							<Route path="profileUpdate" element={<ProfileUpdate />} />
+							<Route
+								path="profileUpdate"
+								element={
+									currentUser ? <ProfileUpdate currentUser={currentUser} /> : <Navigate to="/" />
+								}
+								/>
 							<Route path="*" element={<div>Not Found</div>} />
 							<Route path="topic" element={< Topic />} />
 							<Route path="communities" element={<Community />} />

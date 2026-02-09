@@ -13,13 +13,13 @@ import axios from "axios";
 import userContext from "../../contexts/UserContext";
 
 interface NavBarProps {
-  currentUser?: UserType | null;
+  currentUser: UserType | null;
   onUserSelect: (user: UserType) => void;
   selectedUser: UserType | null;
 }
 
-const NavBar: React.FC<NavBarProps> = ({ currentUser, onUserSelect }) => {
-  const [searchQuery, setSearchQuery] = useState("");
+const NavBar: React.FC<NavBarProps> = ({ currentUser }) => {
+  //const [searchQuery, setSearchQuery] = useState("");
   const [users, setUsers] = useState<UserType[]>([]);
   const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
   //const navigate = useNavigate();
@@ -27,7 +27,7 @@ const NavBar: React.FC<NavBarProps> = ({ currentUser, onUserSelect }) => {
   if (!context) {
     throw new Error("NavBar must be used within a userContext.Provider");
   }
-  const { contextUsername, setContextUsername, contextRole, setContextRole } =
+  const { contextUsername, setContextUsername, /*contextRole, setContextRole*/ } =
     context;
   const baseurl = "http://localhost:3001";
 
@@ -68,9 +68,9 @@ const NavBar: React.FC<NavBarProps> = ({ currentUser, onUserSelect }) => {
     };
   }, []);
 
-  const filteredUsers = users.filter((user) =>
+  /*const filteredUsers = users.filter((user) =>
     user.username.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  );*/
 
   const handleLogout = () => {
     document.cookie =
@@ -97,7 +97,7 @@ const NavBar: React.FC<NavBarProps> = ({ currentUser, onUserSelect }) => {
       </div>
 
       <div className="middle">
-        <UserSearch onUserSelect={onUserSelect} />
+        <UserSearch users={users} onUserSelect={(user) => setSelectedUser(user)} />
       </div>
 
       <div className="right">
@@ -125,7 +125,9 @@ const NavBar: React.FC<NavBarProps> = ({ currentUser, onUserSelect }) => {
                 Log out
               </button>
             </>
-          ) : null}
+          ) : (
+            <span>Loading...</span>
+          )}
         </div>
       </div>
       {selectedUser ? (

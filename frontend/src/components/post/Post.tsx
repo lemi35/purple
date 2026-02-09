@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { useState, useContext, useEffect, useRef } from "react";
 import PostType from "../../types/PostType";
 import CommentType from "../../types/CommentType";
-import UsersContext, { UsersProvider } from "../../contexts/UsersContext";
+import UsersContext from "../../contexts/UsersContext";
 import { CommentsProvider } from "../../contexts/CommentsContext";
 import WriteComment from "../comments/WriteComment";
 import axios from "axios";
@@ -97,10 +97,10 @@ const Post: React.FC<PostProps> = ({
 
   const deletePost = async () => {
     try {
-      const deletedPost = await axios.delete(
+      /*const deletedPost = await axios.delete(
         `http://localhost:3001/posts/${post.post_id}`,
         { withCredentials: true },
-      );
+      );*/
       refreshPosts();
     } catch (error) {
       console.log(error);

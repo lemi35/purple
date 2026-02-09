@@ -38,6 +38,10 @@ const ProfileContent: React.FC<ProfileContentProps & { children?: React.ReactNod
     getPosts();
   }, [user]);
 
+  const refreshPosts = () => {
+  //console.log("Posts refreshed!");
+};
+
   return (
     <div className="profileContent">
       <ProfileBanner user={user} />
@@ -45,7 +49,7 @@ const ProfileContent: React.FC<ProfileContentProps & { children?: React.ReactNod
         <div className="main-content">
           <div className="post">
             {myposts.length > 0
-              ? <SortedPosts posts={myposts}/>
+              ? <SortedPosts posts={myposts} refreshPosts={refreshPosts}/>
               : <p className="noPosts">This user hasn't posted anything yet</p>}
           </div>
         </div>

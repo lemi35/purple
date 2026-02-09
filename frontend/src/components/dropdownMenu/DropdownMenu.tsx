@@ -3,7 +3,6 @@ import { useState } from "react";
 import Icon from '@mdi/react';
 import { mdiMenu } from '@mdi/js';
 import { useNavigate } from "react-router-dom";
-import { mdiAccountOutline } from '@mdi/js';
 import { mdiLogin } from '@mdi/js';
 import { mdiAccountSearch } from '@mdi/js';
 

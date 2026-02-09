@@ -5,9 +5,11 @@ import ChatType from "../../types/ChatType";
 import WriteMessage from "./WriteMessage";
 
 interface MessagesProps {
-    users: UserType[];
-    currentUser: UserType;
-    selectedUser: UserType | null;
+  currentUser: UserType;
+  chats: ChatType[];
+  selectedUser: UserType;
+  users: UserType[];
+  selectedChat: ChatType;
 }
 
 const Messages: React.FC<MessagesProps> = ({ currentUser, users, selectedUser }) => {

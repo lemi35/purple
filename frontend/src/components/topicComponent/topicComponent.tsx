@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import "./topicComponent.scss"
 import { Link } from 'react-router-dom'
 import userContext from "../../contexts/UserContext";
-import axios from 'axios'
+//import axios from 'axios'
 
 interface topicInterface {
   id: number,
@@ -18,7 +18,7 @@ interface TopicComponentProps extends topicInterface {
   refreshTopics?: () => void;
 }
 
-const topicComponent = ({ id, description, image, title, username,  refreshTopics }: TopicComponentProps) => {
+const topicComponent = ({ description, image, title, username,  refreshTopics }: TopicComponentProps) => {
   const context = useContext(userContext);
   if (!context) {
     throw new Error('topicComponent must be used within a userContext.Provider');
@@ -27,7 +27,7 @@ const topicComponent = ({ id, description, image, title, username,  refreshTopic
 
   const deleteTopic = async () => {
     try {
-      const deletedTopic = await axios.delete(`http://localhost:3001/topics/${id}`)
+      //const deletedTopic = await axios.delete(`http://localhost:3001/topics/${id}`)
       refreshTopics?.();
     } catch (error) {
       console.log(error)

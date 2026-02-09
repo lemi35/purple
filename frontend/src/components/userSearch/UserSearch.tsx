@@ -7,6 +7,7 @@ import Icon from '@mdi/react';
 import { mdiMagnify } from '@mdi/js';
 
 interface UserSearchProps {
+    users: UserType[];
     onUserSelect: (user: UserType) => void;
 }
 
