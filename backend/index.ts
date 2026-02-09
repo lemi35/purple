@@ -20,7 +20,7 @@ import { router as communityRouter} from "./routes/communities"
 import bcrypt from "bcrypt";
 
 const allowedOrigins = [
-  "http://localhost:5173",
+  //"http://localhost:5173",
   "https://snazzy-platypus-6381f4.netlify.app"
 ];
 
