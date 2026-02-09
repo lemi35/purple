@@ -20,7 +20,7 @@ import { router as communityRouter} from "./routes/communities"
 import bcrypt from "bcrypt";
 
 const allowedOrigins = [
-  //"http://localhost:5173",
+  "http://localhost:5173",
   "https://snazzy-platypus-6381f4.netlify.app"
 ];
 
@@ -28,10 +28,21 @@ dotenv.config();
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // allow server-to-server, curl, Postman (no origin)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true
+  })
+);
 app.use(express.json());
 app.use(express.static("uploads"));
 
@@ -64,7 +75,7 @@ const options = {
 				bearerAuth: [],
 			},
 		],
-		servers: [{ url: "http://localhost:3001" }],
+		servers: [{ url: "https://purple-lfdw.onrender.com" }],
 	},
 	apis: ["./routes/*.ts"],
 };
