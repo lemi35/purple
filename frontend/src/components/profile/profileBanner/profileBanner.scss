@@ -1,47 +1,166 @@
 .banner {
-    position: relative;
-    margin-top: 30px;
-    margin-bottom: 80px;
-    max-height: 210px;
-    max-width: 800px;
     width: 100%;
+    margin: 0 auto;
+    background: white;
+    border-radius: 0 0 20px 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 
-    .banner-image {
+    .banner-image-container {
         width: 100%;
-        height: 200px; 
-        object-fit: cover;
-        //border-top-left-radius: 50px;
-        border-top-right-radius: 30px;
-    }
+        height: 280px;
+        position: relative;
+        background: #eef1f5;
 
-    .profile-image {
-        position: absolute;
-        top: 97%; 
-        left: 15%; 
-        transform: translate(-50%, -50%);
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        border: 2px solid white; 
-    }
-
-    .nameAndProfile {
-
-        .username {
-            position: relative;
-            top: 98%; 
-            left: 25%; 
-            font-size: 30px;
-            color: black;
+        .banner-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
-   
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.5));
+        }
+    }
+
+    .profile-info-container {
+        padding: 0 40px 40px;
+        position: relative;
+
+        .profile-header-content {
+            display: flex;
+            align-items: center; /* vertically center username with the avatar */
+            gap: 25px;
+            margin-top: -80px; // Only pull the content UP over the banner
+            position: relative;
+            z-index: 100;
+            flex-wrap: nowrap; /* don't allow wrapping — allow shrinking instead */
+        }
+
+        .profile-image-wrapper {
+            width: 160px;
+            height: 160px;
+            flex-shrink: 0;
+            background: #ebe6e6;
+            border-radius: 50%;
+            padding: 4px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .profile-image {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                object-fit: cover;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden; 
+                top: auto;
+                left: auto;
+                transform: none;
+            }
+
+            .profile-image-placeholder {
+                background: #e4e5e6;
+            }
+
+            .profile-edit {
+                position: absolute;
+                bottom: 8px;
+                right: 8px;
+                z-index: 102;
+            }
+        }
+
         .profiletext {
-            position: relative;
-            top: 120%; 
-            left: 25%; 
-            font-size: 15px;
-            color: black;
+            flex: 1 1 auto;
+            min-width: 0; /* allow shrinking on small screens */
+            align-self: center;
+            margin: 0 0 0 12px;
+            font-size: 16px;
+            color: #160e0e;
+            line-height: 1.2;
+            max-width: 500px;
+            overflow-wrap: break-word;
+        }
+
+        .profilename {
+            flex: 0 0 auto;
+            padding-bottom: 3px;
+            display: flex;
+            align-items: center; /* keep username vertically centered with avatar */
+            min-width: 150px;
+
+            .username {
+                font-size: 28px;
+                font-weight: 800;
+                color: #0b0b0d;
+                margin-left: 3cm; /* horizontal shift as requested */
+                letter-spacing: -1px;
+                line-height: 1.2;
+                position: static; /* no vertical shift */
+            }
+
+            @media (max-width: 600px) {
+                .username {
+                    margin-left: 1rem; /* reduce horizontal shift on small screens */
+                    font-size: 22px;
+                }
+            }
+        }
+        
+    }
+        .username {
+            margin-top: 10px !important;
+        }
+        .profiletext {
+            margin-top: 24px !important;
+        }
+        @media (max-width: 200px) {
+            .profilename .username {
+                margin-top: 4px !important;
+                margin-left: 1rem !important;
+            }
+            .profiletext {
+                margin-top: 20px !important;
+            }
+        }
+
+    .edit-icon-button {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        color: #1a1a1b;
+        transition: all 0.2s ease;
+        z-index: 101;
+
+        &:hover {
+            background: white;
+            transform: scale(1.1);
+            color: #6200ee;
+        }
+
+        &.banner-edit {
+            position: absolute;
+            top: 20px;
+            right: 20px;
         }
     }
-    
 }

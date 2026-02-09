@@ -9,10 +9,13 @@ lerna-debug.log*
 
 node_modules/
 dist
+buildgit remote -v
+
 dist-ssr
 *.local
 
 .env
+.enx.example
 
 # Editor directories and files
 .vscode/*

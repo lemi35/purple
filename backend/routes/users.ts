@@ -2,7 +2,7 @@ import express from "express";
 export const router = express.Router();
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import {  validationResult } from "express-validator";
+import { validationResult } from "express-validator";
 const prisma = new PrismaClient();
 import multer from "multer";
 import bcrypt from "bcrypt";
@@ -194,6 +194,24 @@ router.use(express.json());
  *                 $ref: '#/components/schemas/User'
  */
 router.get("/", async (req: Request, res: Response) => {
+	const username = req.query.username as string;
+	if (username) {
+		try {
+			const user = await prisma.user.findUnique({
+				where: {
+					username: username
+				}
+			});
+			if (user) {
+				return res.send(user);
+			} else {
+				return res.status(404).send("User not found");
+			}
+		} catch (error) {
+			console.log(error);
+			return res.status(500).send("Internal server error");
+		}
+	}
 	//console.log(req.cookies);
 	const users = await prisma.user.findMany({});
 	res.send(users);
@@ -233,7 +251,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 
 
 
-router.put("/update", upload.single("file"), authenticationMiddleware, async (req: Request, res: Response) => {
+router.put("/update", upload.fields([{ name: 'profileImage', maxCount: 1 }, { name: 'profileBanner', maxCount: 1 }]), authenticationMiddleware, async (req: Request, res: Response) => {
 
 	const user = await prisma.user.findUnique({
 		where: {
@@ -245,12 +263,12 @@ router.put("/update", upload.single("file"), authenticationMiddleware, async (re
 	}
 
 
-	
+
 	if (req.body.currentPassword) {
 		try {
 			if (await bcrypt.compare(req.body.currentPassword, user.password)) {
-				const decodedUser = {name: req.body.username};
-				
+				const decodedUser = { name: req.body.username };
+
 			} else {
 				res.status(400).send("Wrong username or password");
 				return;
@@ -260,9 +278,9 @@ router.put("/update", upload.single("file"), authenticationMiddleware, async (re
 		}
 	}
 
-	
 
-	
+
+
 
 	let hashedPassword;
 	let salt;
@@ -286,7 +304,8 @@ router.put("/update", upload.single("file"), authenticationMiddleware, async (re
 					//tokenExpire: req.body.tokenExpire,
 					//createdAt: req.body.username,
 					profileText: req.body.profileText,
-					profileImage: req.file?.filename,
+					profileImage: (req.files as any)?.['profileImage']?.[0]?.filename,
+					profileBanner: (req.files as any)?.['profileBanner']?.[0]?.filename,
 					//posts: req.body.posts,
 					//follows: req.body.follows,
 					//post: req.body.post,
@@ -303,10 +322,10 @@ router.put("/update", upload.single("file"), authenticationMiddleware, async (re
 			res.status(404).send("User not found");
 		}
 	}
-	
+
 });
 
-router.put("/:id", upload.single("file"), async (req: Request, res: Response) => {
+router.put("/:id", upload.fields([{ name: 'profileImage', maxCount: 1 }, { name: 'profileBanner', maxCount: 1 }]), async (req: Request, res: Response) => {
 
 	if (validationResult(req)) {
 		try {
@@ -322,7 +341,8 @@ router.put("/:id", upload.single("file"), async (req: Request, res: Response) =>
 					//tokenExpire: req.body.tokenExpire,
 					//createdAt: req.body.username,
 					profileText: req.body.profileText,
-					profileImage: req.file?.filename,
+					profileImage: (req.files as any)?.['profileImage']?.[0]?.filename,
+					profileBanner: (req.files as any)?.['profileBanner']?.[0]?.filename,
 					//posts: req.body.posts,
 					//follows: req.body.follows,
 					//post: req.body.post,
@@ -339,7 +359,7 @@ router.put("/:id", upload.single("file"), async (req: Request, res: Response) =>
 			res.status(404).send("User not found");
 		}
 	}
-	
+
 });
 
 router.delete("/remove", authenticationMiddleware, async (req: Request, res: Response) => {
@@ -363,7 +383,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
 		const users = await prisma.user.delete({
 			where: {
 				id: Number(req.params.id),
-				...(req.role == "admin" ? {} : {id : req.id})
+				...(req.role == "admin" ? {} : { id: req.id })
 			}
 		});
 		res.send(users);

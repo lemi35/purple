@@ -1,8 +1,5 @@
 import "./userProfile.scss";
 import UserType from "../../types/UserType";
-//import PostType from "../../types/PostType";
-//import { useState, useEffect } from "react";
-//import axios from "axios";
 import ProfileContent from "./ProfileContent";
 
 interface ProfileContentProps {
@@ -10,7 +7,6 @@ interface ProfileContentProps {
   }
 
 const ProfileComponent: React.FC<ProfileContentProps> = ({user}) => {
-    /* console.log("User", user) */
 
     if (!user) return null;
 

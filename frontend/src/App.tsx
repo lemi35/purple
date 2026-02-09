@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import {
 	BrowserRouter as Router,
 	Routes,
@@ -24,9 +24,9 @@ import Users from "./pages/users/Users";
 import ChatType from "./types/ChatType";
 import Topic from "./pages/topic/Topic";
 import Community from "./pages/community/Community";
-
-export const userContext = createContext();
-
+import { UsersProvider } from "./contexts/UsersContext";
+import userContext from "./contexts/UserContext";
+import CommunityType from "./types/CommunityType";
 
 
 
@@ -34,7 +34,7 @@ function App() {
 	const usernameFromCookie = document.cookie.split("; ").find((row) => row.startsWith("username="))?.split("=")[1];
 	const roleFromCookie = document.cookie.split("; ").find((row) => row.startsWith("role="))?.split("=")[1];
 
-	const [currentUser, setCurrentUser] = useState<UserType | null>(null); 
+	const [currentUser, setCurrentUser] = useState<UserType | null>(null);
 	const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
 	const [chatId, setChatId] = useState<string | null>(null);
 	const [users, setUsers] = useState<UserType[]>([]);
@@ -42,11 +42,12 @@ function App() {
 	const [clickedUser, setClickedUser] = useState<UserType | null>(null);
 	const [contextUsername, setContextUsername] = useState(usernameFromCookie)
 	const [contextRole, setContextRole] = useState(roleFromCookie)
+	const [communities, setCommunities] = useState<CommunityType[]>([]);
 
 
 	const handleUserSelect = (user: UserType) => {
-        setSelectedUser(user);
-    };
+		setSelectedUser(user);
+	};
 
 	const handleUserClick = (user: UserType) => {
 		setClickedUser(user);
@@ -57,29 +58,18 @@ function App() {
 
 	useEffect(() => {
 		const fetchCurrentUser = async () => {
-			try {
-				const response = await axios.get(`${baseurl}/users/2`);
-				setCurrentUser(response.data);
-			} catch (error) {
-				console.error("Error fetching current user:", error);
+			if (usernameFromCookie) {
+				try {
+					const response = await axios.get(`${baseurl}/users?username=${usernameFromCookie}`);
+					setCurrentUser(response.data);
+				} catch (error) {
+					console.error("Error fetching current user:", error);
+				}
 			}
 		};
 
 		fetchCurrentUser();
-	}, []);
-
-	/* useEffect(() => {
-		const fetchClickedUser = async () => {
-			try {
-				const response = await axios.get(`${baseurl}/users/4`);
-				setClickedUser(response.data);
-			} catch (error) {
-				console.error("Error fetching current user:", error);
-			}
-		};
-
-		fetchClickedUser();
-	}, []); */
+	}, [usernameFromCookie]);
 
 	useEffect(() => {
 		const fetchChat = async () => {
@@ -101,12 +91,14 @@ function App() {
 	const Layout = ({ children }: { children?: ReactNode }) => {
 		return (
 			<div className="theme-light">
-				{currentUser && <NavBar currentUser={currentUser}  onUserSelect={handleUserClick}/>} {/* Render NavBar only if currentUser is defined */}
-				<div style={{ display: "flex" }}>
-					<LeftBar />
-					<div style={{ flex: 6 }}>
-						<Outlet />
-						{children}
+				<div className="layout-container">
+					<NavBar currentUser={currentUser} onUserSelect={handleUserClick} selectedUser={selectedUser} />
+					<div style={{ display: "flex" }}>
+						<LeftBar />
+						<div style={{ flex: 6 }}>
+							<Outlet />
+							{children}
+						</div>
 					</div>
 				</div>
 			</div>
@@ -116,27 +108,29 @@ function App() {
 	const ChatLayout = ({ children }: { children?: ReactNode }) => {
 		return (
 			<div className="theme-light">
-				{currentUser && <NavBar currentUser={currentUser} onUserSelect={handleUserClick} />} 
-				<div style={{ display: "flex" }}>
-					{currentUser && (<ChatLeftBar  
-						currentUser={currentUser} 
-						onUserSelect={handleUserSelect} 
+				<div className="layout-container">
+					<NavBar currentUser={currentUser} onUserSelect={handleUserClick} selectedUser={selectedUser} />
+					<div style={{ display: "flex" }}>
+						{currentUser && (<ChatLeftBar
+							currentUser={currentUser}
+							onUserSelect={handleUserSelect}
 						/>
-					)}
-					<div style={{ flex: 6 }}>
-						<Outlet />
-						{currentUser && (
-						<Chat 
-							currentUser={currentUser} 
-							selectedUser={selectedUser}
-							chats={chats}
-							users={users} 
-						/> 
 						)}
-						{children}
+						<div style={{ flex: 6 }}>
+							<Outlet />
+							{currentUser && (
+								<Chat
+									currentUser={currentUser}
+									selectedUser={selectedUser}
+									chats={chats}
+									users={users}
+								/>
+							)}
+							{children}
+						</div>
 					</div>
 				</div>
-			</div> 
+			</div>
 		);
 	};
 
@@ -147,40 +141,48 @@ function App() {
 				navigate("/login");
 			}
 		}, [/* currentUser, */ navigate]);
-	
+
 		return currentUser ? children : null;
 	};
 
 	return (
-		<userContext.Provider value={{contextUsername, setContextUsername, contextRole, setContextRole }}>
-		<Router>
-			<Routes>
-				<Route path="/" element={<Layout />}>
-					<Route path="/" element={<Home />} />
-					<Route path="profile/my" 
-						element={<MyProfile currentUser={currentUser} />} />
-					<Route path="profile/:id" 
-						element={<UserProfile user={clickedUser} />} />
-					<Route path="friends" element={<Friends user={clickedUser}/>} />
-					<Route path="users" element={<Users onUserSelect={handleUserClick} /* user={currentUser} *//>} />
-					<Route path="profileUpdate" element={<ProfileUpdate />} />
-					<Route path="*" element={<div>Not Found</div>} />
-					<Route path="topic" element={< Topic />} />
-					<Route path="community/*" element={<Community/>} />
-					<Route path="login" element={<Login />} />
-					<Route path="register" element={<Register />} />
-				</Route>
+		<userContext.Provider value={{ 
+				contextUsername, 
+				setContextUsername, 
+				contextRole, 
+				setContextRole, 
+				currentUser, 
+				setCurrentUser }}>
+			<UsersProvider>
+				<Router>
+					<Routes>
+						<Route path="/" element={<Layout />}>
+							<Route path="/" element={<Home />} />
+							<Route path="profile/my"
+								element={<MyProfile currentUser={currentUser} />} />
+							<Route path="profile/:id"
+								element={<UserProfile user={clickedUser} />} />
+							<Route path="friends" element={<Friends user={clickedUser} />} />
+							<Route path="users" element={<Users onUserSelect={handleUserClick} /* user={currentUser} */ />} />
+							<Route path="profileUpdate" element={<ProfileUpdate />} />
+							<Route path="*" element={<div>Not Found</div>} />
+							<Route path="topic" element={< Topic />} />
+							<Route path="communities" element={<Community />} />
+							<Route path="login" element={<Login />} />
+							<Route path="register" element={<Register />} />
+						</Route>
 
-				<Route path="/chat/*" element={
-					<ProtectedRoute>
-						<ChatLayout />
-					</ProtectedRoute>
-				}>
-					{/* <Route path=":id" element={<Chat  />} /> */}
-				</Route>
-				
-			</Routes>
-		</Router>
+						<Route path="/chat/*" element={
+							<ProtectedRoute>
+								<ChatLayout />
+							</ProtectedRoute>
+						}>
+							{/* <Route path=":id" element={<Chat  />} /> */}
+						</Route>
+
+					</Routes>
+				</Router>
+			</UsersProvider>
 		</userContext.Provider>
 	);
 }

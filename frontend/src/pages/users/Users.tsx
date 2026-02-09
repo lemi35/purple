@@ -8,7 +8,6 @@ import { Link } from "react-router-dom";
 
 interface UsersProps {
   onUserSelect: (user: UserType) => void;
-  /* user: UserType | null; */
 }
 
 const Users: React.FC<UsersProps> = ({onUserSelect/* , user */}) => {
@@ -19,7 +18,6 @@ const Users: React.FC<UsersProps> = ({onUserSelect/* , user */}) => {
         const fetchUsers = async () => {
           try {
             const response = await axios.get(`${baseurl}/users`); 
-            console.log("Fetched users:", response.data);
             setUsers(response.data); 
           } catch (error) {
             console.error("Error fetching users:", error);
@@ -31,7 +29,7 @@ const Users: React.FC<UsersProps> = ({onUserSelect/* , user */}) => {
 
     return (
     <div className="users">
-      <h1>All Users</h1>
+      <h1>All Users here</h1>
       <ul>
         {users.map((user) => (
             <li key={user.id} 
@@ -41,8 +39,9 @@ const Users: React.FC<UsersProps> = ({onUserSelect/* , user */}) => {
                 <Link to={`/profile/${user.id}`} className="user-link">
                     <div className="user-info">
                         <img 
-                          src={user.profileImage} 
-                          alt={user.username} 
+                          src={user.profileImage?.startsWith("http")
+                          ? user.profileImage
+                      : `${baseurl}/${user.profileImage}`} 
                           width={40} 
                           height={40} 
                           />

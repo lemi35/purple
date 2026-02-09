@@ -2,8 +2,6 @@ import "./posts.scss";
 import Post from "../post/Post";
 import PostType from "../../types/PostType";
 import { UsersProvider } from "../../contexts/UsersContext";
-//import { useEffect, useState } from "react";
-//import axios from "axios";
 
 interface PostWithUser extends PostType {
   user: {
@@ -21,25 +19,6 @@ const Posts: React.FC<PostsProps> = ( {posts, refreshPosts} ) => {
 
 
     const baseurl = "http://localhost:3001" 
-
-    //const [posts, setPosts] = useState<PostType[] | null>(null);
-
-    /* useEffect(() => {
-      getPosts();
-    }, []);
-
-    const getPosts = async () => {
-      try {
-          const posts = await axios.get(`${baseurl}/posts`);
-          const sortedPosts = posts.data.sort((a: PostType, b: PostType) => //Sorts data so that the newest post is first
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-          );
-          console.log(sortedPosts);
-          setPosts(sortedPosts);
-      } catch (error) {
-          console.error("error fetching posts:", error);
-      }
-    }; */
 
     const getImageUrl = (image: string | undefined) => {
       if (!image) {

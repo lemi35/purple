@@ -1,45 +1,134 @@
+/* ============================= */
+/* TOPIC CARD                    */
+/* ============================= */
+
 .div-topic-component {
   display: flex;
+  align-items: flex-start;      /* prevents stretching */
+  gap: 14px;
+
   width: 100%;
-  margin: 10px;
-  border-radius: 5px;
-  border: 2px solid black;
-  
+  max-width: 600px;
+  margin: 10px auto;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(169, 161, 161, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.div-topic-component > a {
-  width: 100%;
+.div-topic-component:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(127, 125, 125, 0.12);
 }
 
+/* ============================= */
+/* IMAGE (DESKTOP)               */
+/* ============================= */
 
+.div-topic-component img {
+  width: 140px;
+  aspect-ratio: 3 / 2;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;               /* 🔥 stops text push */
+  display: block;
+  background: #e0e0e0;
+}
 
-
+/* ============================= */
+/* LINK WRAPPER                  */
+/* ============================= */
 
 .div-topic-component > a {
+  flex: 1;
+  min-width: 0;                 /* 🔥 required for text wrap */
   text-decoration: none;
+  color: inherit;
 }
 
-.div-topic-component > a:hover {
-  text-decoration:none; 
-  cursor:pointer;  
-}
+/* ============================= */
+/* TEXT SECTION                  */
+/* ============================= */
 
 .div-topic-title-desc {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  padding: 1%;
+  padding: 15px;
+  transition: background-color 0.2s, color 0.2s;
 }
+
 .div-topic-title-desc:hover {
-  background-color: rgb(128, 94, 161);
+  background-color: #bbb4c5;
+  color: #fff;
   cursor: pointer;
 }
 
+.div-topic-title-desc h4 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #7a6795;
+  word-break: break-word;
+}
+
+.div-topic-title-desc:hover h4 {
+  color: #fff;
+}
+
+.div-topic-title-desc p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #7b7a7a;
+  overflow-wrap: anywhere;
+}
+
+.div-topic-title-desc:hover p {
+  color: #f0f0f0;
+}
+
 .div-topic-title-desc button {
-  background-color: red;
+  align-self: flex-start;
+  margin-top: 10px;
+  padding: 5px 10px;
+
+  background-color: #4f4747;
+  color: #fff;
+  border: none;
   border-radius: 5px;
-  padding: 2px;
-  margin: 2px;
-  height: 30px;
+
+  font-size: 0.85rem;
   cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.div-topic-title-desc button:hover {
+  background-color: #965d5d;
+  transform: translateY(-1px);
+}
+
+/* ============================= */
+/* MOBILE — CIRCLE IMAGE         */
+/* ============================= */
+
+@media (max-width: 600px) {
+  .div-topic-component {
+    margin: 10px 5px;
+    align-items: center;
+  }
+
+  .div-topic-component img {
+    width: 90px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+  }
+
+  .div-topic-title-desc h4 {
+    font-size: 1rem;
+  }
+
+  .div-topic-title-desc p {
+    font-size: 0.9rem;
+  }
 }

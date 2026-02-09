@@ -3,17 +3,17 @@ import UserType from "../../types/UserType";
 import ProfileContent from "./ProfileContent";
 
 interface CurrentUserProfileProps {
-    currentUser: UserType |null;
-  }
+    currentUser: UserType | null;
+}
 
 const CurrentUserProfile: React.FC<CurrentUserProfileProps> = ({ currentUser }) => {
-    
+
 
     if (!currentUser) return null;
 
     return (
         <div className="profile">
-            <ProfileContent user={currentUser}/>
+            <ProfileContent user={currentUser} />
         </div>
     );
 };

@@ -10,13 +10,10 @@ const generateAccessToken = (user : {name : string} ) => {
 
 export const adminCheckMiddleware = async (req:Request,res:Response,next:NextFunction) => {
 	const accessToken = req.cookies.accesstoken;
-	//console.log("admin middleware", accessToken);
 	const token = accessToken; 
-	//console.log(token);
 	if (process.env.ACCESS_TOKEN_SECRET) 
 		try {
 			const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as JwtPayload;
-			//console.log(decoded);
 			const isAdmin = await prisma.user.findUnique({
 				where: {
 					username: decoded.name
@@ -24,7 +21,6 @@ export const adminCheckMiddleware = async (req:Request,res:Response,next:NextFun
 			});
 			if (isAdmin) {
 				if (isAdmin.role == "admin") {
-					//console.log(isAdmin.role);
 					next();
 				}
 				else {
@@ -36,7 +32,6 @@ export const adminCheckMiddleware = async (req:Request,res:Response,next:NextFun
 			}
 		} catch (error) {
 			if (req.cookies.refreshtoken) {
-				//console.log("access token decoding failed, checking refresh token validity");
 				try {
 					const user = await prisma.user.findFirst({
 						where: {
@@ -45,7 +40,6 @@ export const adminCheckMiddleware = async (req:Request,res:Response,next:NextFun
 					});
 					if (user) {
 						const newAccessToken = generateAccessToken( {name: user.username});
-						//console.log(newAccessToken);
 
 						const isAdmin = await prisma.user.findUnique({
 							where: {
@@ -54,7 +48,6 @@ export const adminCheckMiddleware = async (req:Request,res:Response,next:NextFun
 						});
 						if (isAdmin) {
 							if (isAdmin.role == "admin") {
-								//console.log(isAdmin.role);
 								res.cookie("accesstoken", newAccessToken, {maxAge: 24 * 60 * 60 * 1000, httpOnly: false});
 								next();
 							}
@@ -70,7 +63,6 @@ export const adminCheckMiddleware = async (req:Request,res:Response,next:NextFun
 					}
 				}	
 				catch (error) {
-					//console.log("error1");
 					res.status(401).send();
 				}
 			}

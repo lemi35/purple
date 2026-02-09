@@ -24,18 +24,17 @@ model User {
   profileText   String?
   profileImage  String?
   profileBanner String?
-  posts         Int       @default(0)
-  follows       Int       @default(0)
+  
 
-  post               Post[]    @relation("user_posts")
+  posts               Post[]    @relation("user_posts")
   comments           Comment[] @relation("user_comments")
   chats_participant1 Chat[]    @relation("chats_user1")
   chats_participant2 Chat[]    @relation("chats_user2")
 
   followsAsFollower     Follow[]  @relation("follower")
   followsAsFollowedUser Follow[]  @relation("followedUser")
-  Message               Message[]
-  topic Topic [] @relation("user_topics")
+  messages               Message[]
+  topics Topic [] @relation("user_topics")
 
 }
 
@@ -100,12 +99,27 @@ model Follow {
 
 model Topic {
   topic_id   Int      @id @default(autoincrement())
-  title       String   @unique
-  created_at DateTime @default(now())
-  image String?
+  title      String   @unique
   description String?
-  user_id Int
-  post_id Int?
-  users User @relation(fields: [user_id], references: [id], name: "user_topics")
+  created_at DateTime @default(now())
+  image      String?
+  
+  ownerId    Int?
+  owner      User?    @relation(fields: [ownerId], references: [id], name: "user_topics")
+
+  communityId Int?    // Add this
+  community   Community? @relation(fields: [communityId], references: [community_id])
+
   posts Post[] @relation("topic_posts")
+}
+
+
+model Community {
+  community_id Int      @id @default(autoincrement())
+  name         String   @unique
+  description  String?
+  image        String?
+  created_at   DateTime @default(now())
+
+  topics Topic[]
 }

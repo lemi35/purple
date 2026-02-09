@@ -1,8 +1,6 @@
 import { useState } from "react";
 import "./register.scss";
 import { Link } from "react-router-dom";
-import { json } from "stream/consumers";
-import * as React from "react";
 
 const Register = () => {
 
@@ -46,8 +44,7 @@ const Register = () => {
                     "password": password
                 })
             })
-            const data = await response.json();
-            console.log(data);
+            //const data = await response.json();
             handleSuccessTimer()
         } catch (error) {
             console.log(error);
@@ -58,8 +55,9 @@ const Register = () => {
 
     return (
         <div className="register">
-            <div className="card">
-                <div style={{width: "50%"}}>
+            <div className="register-card">
+                <div >
+                    <h2>Welcome to Purple!</h2>
                     {registrationSuccess &&
                     <div className="div-success">
                         Account succesfully created!

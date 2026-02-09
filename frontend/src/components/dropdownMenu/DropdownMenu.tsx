@@ -32,14 +32,10 @@ const DropdownMenu = () => {
             {isOpen && (                   
             <ul className="dropdown-menu">
                 
-                <li className="dropdown-item" onClick={() => handleNavigation(('/profileUpdate'))}>
-                    <Icon path={mdiAccountOutline} size={1}/>
-                   <p>Get/
-                    Update profiles|test</p> 
-                </li>
+                
                 <li className="dropdown-item" onClick={() => handleNavigation(('/login'))}>
                     <Icon path={mdiLogin} size={1} />
-                    <p>Login | test</p>
+                    <p>Login | Register</p>
                 </li>
                 <li className="dropdown-item" onClick={() => handleNavigation(('/users'))}>
                 <Icon path={mdiAccountSearch} size={1} />

@@ -70,7 +70,7 @@ router.post("/", authenticationMiddleware, async (req, res) => {
 		const { user_id, post_id, content } = req.body;
 		const newComment = await prisma.comment.create({
 			data: {
-				user_id: req.id,
+				user_id: Number(req.id),
 				post_id: post_id,
 				content: content,
 			},
@@ -217,12 +217,12 @@ router.get("/post/:postId", async (req, res) => {
  */
 
 router.delete("/:id", authenticationMiddleware, async (req, res) => {
-	console.log("req params", req.params.id)
+	//console.log("req params", req.params.id)
 	try {
 		const postComments = await prisma.comment.delete({
 			where: {
 				comment_id: Number(req.params.id),
-				...(req.role == "admin" ? {} : {user_id : req.id})
+				...(req.role == "admin" ? {} : { user_id: req.id })
 			},
 		});
 		res.status(200).json(postComments);

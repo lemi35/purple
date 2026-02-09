@@ -3,6 +3,8 @@ import axios from 'axios';
 import UserType from '../../types/UserType';
 import "./userSearch.scss";
 import { Link } from "react-router-dom";
+import Icon from '@mdi/react';
+import { mdiMagnify } from '@mdi/js';
 
 interface UserSearchProps {
     onUserSelect: (user: UserType) => void;
@@ -38,6 +40,7 @@ const UserSearch: React.FC<UserSearchProps> = ({ onUserSelect }) => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
             />
+            <Icon path={mdiMagnify} size={1} color="grey" />
             {searchQuery && (
                 <ul className="search-results">
                     {filteredUsers.map((user) => (
@@ -47,16 +50,16 @@ const UserSearch: React.FC<UserSearchProps> = ({ onUserSelect }) => {
                             onClick={() => onUserSelect(user)}
                         >
                             <Link to={`/profile/${user.id}`} className="user-link">
-                                        <div className="user-info">
-                                            <img 
-                                            src={user.profileImage} 
-                                            alt={user.username} 
-                                            width={40} 
-                                            height={40} 
-                                            />
-                                            <span>{user.username}</span>
-                                        </div>
-                                    </Link>
+                                <div className="user-info">
+                                    <img
+                                        src={user.profileImage}
+                                        alt={user.username}
+                                        width={40}
+                                        height={40}
+                                    />
+                                    <span>{user.username}</span>
+                                </div>
+                            </Link>
                         </li>
                     ))}
                 </ul>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./deleteAccount.scss";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import * as React from "react";
 
@@ -8,9 +8,8 @@ const DeleteAccount = () => {
 
     const navigate = useNavigate()
     const baseurl = "http://localhost:3001"
-    const [registrationError, setRegistrationError] = useState<boolean>(false); 
-    const [registrationSuccess, setRegistrationSuccess] = useState<boolean>(false); 
-    const [errorMessage, setErrorMessage] = useState<string>(""); 
+    const [registrationError, setRegistrationError] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<string>("");
     const [confirmDelete, setConfirmDelete] = useState<boolean>(false)
 
     const handleErrorTimer = (msg: string) => {
@@ -20,16 +19,9 @@ const DeleteAccount = () => {
             setRegistrationError(false);
             setErrorMessage("")
         }, 3000)
-    } 
+    }
 
-    const handleSuccessTimer = () => {
-        setRegistrationSuccess(true);
-        setTimeout(() => {
-            setRegistrationSuccess(false);
-        }, 3000)
-    } 
-
-    const handleRegisterUser = async (e : React.FormEvent<HTMLFormElement>) => {
+    const handleRegisterUser = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         console.log("delete account")
         try {
@@ -50,31 +42,27 @@ const DeleteAccount = () => {
 
 
     return (
-        <div className="register">
-            <div className="card">
-                <div style={{width: "50%"}}>
-                    {registrationSuccess &&
-                    <div className="div-success">
-                        Account removed
-                    </div>
-                    }
-                    {registrationError &&      
-                    <div className="div-error">
-                        <h5>{errorMessage}</h5>
-                    </div>
-                    }
-                { confirmDelete ? <h3>Are you sure you want to delete your account? Please type your username to confirm.</h3> : <h2>Delete account</h2> }
-                <form onSubmit={(e) => handleRegisterUser(e)}>
-                    {confirmDelete == true && <input  type="" placeholder="Username" />}
-                    {confirmDelete == false && <button onClick={() => setConfirmDelete(true)} >Delete account</button>}
-                    {confirmDelete == true && <button type="submit">Yes, I want to delete my account</button>}   
-                    {confirmDelete == true && <button onClick={() => setConfirmDelete(false)} type="submit">Return</button>}   
-
-                </form>  
-             
-
+        <div className="delete-account-container">
+            {registrationError &&
+                <div className="div-error">
+                    {errorMessage}
                 </div>
-            </div>
+            }
+            <h2>{confirmDelete ? "Confirm Deletion" : "Delete Account"}</h2>
+            {confirmDelete && <p className="confirm-text">Are you sure you want to delete your account? This action cannot be undone.</p>}
+            <form onSubmit={(e) => handleRegisterUser(e)}>
+                {confirmDelete && <input type="text" placeholder="Type username to confirm" required />}
+                <div className="button-group">
+                    {!confirmDelete ? (
+                        <button type="button" className="delete-btn" onClick={() => setConfirmDelete(true)}>Delete Account</button>
+                    ) : (
+                        <>
+                            <button type="submit" className="confirm-btn">Confirm Delete</button>
+                            <button type="button" className="cancel-btn" onClick={() => setConfirmDelete(false)}>Cancel</button>
+                        </>
+                    )}
+                </div>
+            </form>
         </div>
     )
 }

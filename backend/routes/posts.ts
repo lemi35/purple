@@ -185,42 +185,39 @@ router.get("/:id", async (req: Request<{ id: string }>, res: Response) => {
  *         description: Internal server error
  */
 router.post("/", upload.single("image"), authenticationMiddleware, async (req, res) => {
+	//console.log("=== POST /posts HANDLER REACHED ===");
+	//console.log("Request body:", req.body);
+	//console.log("User ID from auth:", req.id);
+	//console.log("File:", req.file);
+
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
+		console.log("Validation errors:", errors.array());
 		return res.status(400).json({ errors: errors.array() });
 	}
 
 	try {
-		let generalDiscussionTopic = await prisma.topic.findUnique({
-			where: {
-				title: "General Discussion"
-			}
-		});
-
-		if (!generalDiscussionTopic) {
-			generalDiscussionTopic = await prisma.topic.create({
-				data: {
-					title: "General Discussion",
-					users: {
-						connect: { id: Number(req.id) }
-					}
-				}
-			});
+		if (!req.body.topic_id) {
+			console.log("ERROR: topic_id is missing");
+			return res.status(400).send("topic_id is required");
 		}
+
+		console.log("Creating post with topic_id:", req.body.topic_id);
 
 		const newPost = await prisma.post.create({
 			data: {
-			  title: req.body.title,
+				title: req.body.title,
 				content: req.body.content,
 				user: { connect: { id: Number(req.id) } },
-				topic: { connect: { topic_id: generalDiscussionTopic.topic_id } },
+				topic: { connect: { topic_id: Number(req.body.topic_id) } },
 				image: req.file?.filename
 			}
 		});
 
+		//console.log("Post created successfully:", newPost);
 		res.json(newPost);
 	} catch (error) {
-		console.log(error);
+		console.log("ERROR creating post:", error);
 		res.status(500).send("Internal server error");
 	}
 });
@@ -295,6 +292,59 @@ router.put("/:id", upload.single("image"), async (req: Request<{ id: string }>, 
 
 /**
  * @swagger
+ * /posts/{id}/vote:
+ *   put:
+ *     summary: Update upvotes and downvotes for a post
+ *     tags: [Post]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID of the post to update votes for
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               upvotes:
+ *                 type: number
+ *               downvotes:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: The updated post
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ *       404:
+ *         description: Post not found
+ */
+router.put("/:id/vote", async (req: Request<{ id: string }>, res: Response) => {
+	try {
+		const { upvotes, downvotes } = req.body;
+		const updatedPost = await prisma.post.update({
+			where: {
+				post_id: Number(req.params.id)
+			},
+			data: {
+				upvotes: upvotes,
+				downvotes: downvotes
+			}
+		});
+		res.json(updatedPost);
+	} catch (error) {
+		console.log(error);
+		res.status(404).send("Post not found");
+	}
+});
+
+/**
+ * @swagger
  * /posts/{id}:
  *   delete:
  *     summary: Delete a post by ID
@@ -317,7 +367,7 @@ router.put("/:id", upload.single("image"), async (req: Request<{ id: string }>, 
  *         description: Post not found
  */
 router.delete("/:id", authenticationMiddleware, async (req: Request<{ id: string }>, res: Response) => {
-	console.log(req.params.id)
+	//console.log(req.params.id)
 	// 					//...(test && {post_id: Number(req.params.id)}),
 
 	try {
@@ -328,12 +378,12 @@ router.delete("/:id", authenticationMiddleware, async (req: Request<{ id: string
 		});
 
 		const deletedPost = await prisma.post.delete({
-			where: 
-				{
-					post_id: Number(req.params.id),
-					...(req.role == "admin" ? {} : {user_id : req.id})
+			where:
+			{
+				post_id: Number(req.params.id),
+				...(req.role == "admin" ? {} : { user_id: req.id })
 
-				}
+			}
 		});
 
 		res.send(deletedPost);

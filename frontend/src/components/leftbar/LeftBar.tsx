@@ -1,31 +1,43 @@
 
 import Icon from '@mdi/react';
-import { mdiHomeOutline } from '@mdi/js';
-import { mdiAccountOutline, mdiAccountSearch } from '@mdi/js';
-import { mdiAccountMultipleOutline } from '@mdi/js';
+import {
+  mdiHomeOutline,
+  mdiAccountOutline,
+  mdiAccountMultipleOutline,
+  mdiAccountSearch,
+  mdiAccountGroupOutline,
+} from '@mdi/js';
 import { Link } from "react-router-dom";
 import "./leftBar.scss";
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import CommunityType from '../../types/CommunityType';
 
 const LeftBar = () => {
 
     const baseurl = "http://localhost:3001"
     const [topics, setTopics] = useState([])
+    const [communities, setCommunities] = useState<CommunityType[]>([])
 
     useEffect(() => {
-        console.log("leftbar")
         const fetchTopics = async () => {
             const response = await axios.get(`${baseurl}/topics`)
-            console.log(response)
             setTopics(response.data)
         }
         fetchTopics()
     }, [])
 
-    const mapTopics = () => {
-        //topics.map()
-    }
+    useEffect(() => {
+    const fetchCommunities = async () => {
+      try {
+        const response = await axios.get<CommunityType[]>(`${baseurl}/communities`);
+        setCommunities(response.data);
+      } catch (error) {
+        console.error("Error fetching communities:", error);
+      }
+    };
+    fetchCommunities();
+  }, []);
 
     return (
         <div className="leftBar">
@@ -49,26 +61,7 @@ const LeftBar = () => {
                             <span>Friends</span>
                         </Link>
                     </div>
-                    {/* <div className="item">
-                    <Link to="/users">
-                    <Icon path={mdiAccountSearch} size={1} />
-                        <span>Users</span>
-                    </Link>
-                    </div> */}
-                    {/* <div className="item">
-                    <Link to="/profileUpdate">
-                        <Icon path={mdiAccountOutline} size={1}/>
-                        <span>Get/Update profiles | test</span>
-                    </Link>
-                    
-                    </div> */}
-                    {/* <div className="item">
-                    <Link to="/login">
-                        <Icon path={mdiAccountOutline} size={1}/>
-                        <span>Login | test</span>
-                    </Link>
-                    
-                    </div> */}
+                   
                 </div>
 
                 <hr/>
@@ -77,17 +70,18 @@ const LeftBar = () => {
                     <div className="item">
                         <Link to="/topic">
                         <Icon path={mdiAccountSearch} size={1} />
-                            <span>TOPICS</span>
+                            <span>Topics</span>
                         </Link>                    
-                        {/*<div className="item">Gaming</div>
-                        <div className="item">Nature</div>
-                        <div className="item">TV</div>*/}
-
                     </div>
+                    <div className="item">
+                        <Link to="/communities">
+                        <Icon path={mdiAccountGroupOutline} size={1} />
+                            <span>Groups</span>
+                        </Link>                    
+                    </div>
+                    
                 </div>
-
                 <hr />
-
                 <div className='menu'>
                     <div className="item">
                         <Link to="/login">
@@ -101,6 +95,7 @@ const LeftBar = () => {
                                 <span>Register</span>  
                         </Link>                        
                     </div>
+                    
                 </div>
             </div>
         </div>

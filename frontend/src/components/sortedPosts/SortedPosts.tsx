@@ -12,14 +12,15 @@ interface PostWithUser extends PostType {
 
 interface SortedPostsProps {
   posts: PostWithUser[];
+  refreshPosts: () => void;
 }
 
-const SortedPosts: React.FC<SortedPostsProps> = ({ posts }) => {
+const SortedPosts: React.FC<SortedPostsProps> = ({ posts, refreshPosts }) => {
   const sortedPosts = [...posts].sort((a, b) => 
     new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
   );
 
-  return <Posts posts={sortedPosts} />;
+  return <Posts posts={sortedPosts} refreshPosts={refreshPosts}/>;
 }
 
 export default SortedPosts;

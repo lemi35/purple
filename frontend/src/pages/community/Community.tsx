@@ -1,50 +1,44 @@
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import Post from '../../components/post/Post'
-import PostType from "../../types/PostType";
+import { useEffect, useState } from 'react'
+import CommunityComponent from '../../components/communityComponent/communityComponent';
+import CommunityType from '../../types/CommunityType';
+import CommunityCreate from '../../components/communityCreate/communityCreate';
 import "./community.scss"
+
 
 const Community = () => {
   const baseurl = "http://localhost:3001"
-  const [posts, setPosts] = useState([])
-  const communityName = window.location.pathname.split("/")[2];
+  const [communities, setCommunities] = useState<CommunityType[]>([]);
 
   useEffect(() => {
     const fetchCommunityIfAvailable = async () => {
       try {
-        console.log(communityName)
-        const response = await axios.get(`${baseurl}/topics/?title=${communityName}`)
-        console.log(response.data[0].posts)
-        setPosts(response.data[0].posts)
+        const response = await axios.get(`${baseurl}/communities`)
+        setCommunities(response.data)
       } catch (error) {
-        console.log(error)
+        console.log("Error fetching communities", error)
       }
     }
     fetchCommunityIfAvailable()
     
   }, [])
 
-  const mapPosts = () => {
-    console.log(posts)
-    return posts.map(post => (
-      <Post 
-          key={post.post_id} 
-          post={post} // prop includes e.g. image, title & content
-          username={post.user.username}
-          profileImage={post.image || ''}
-          upvotes={post.upvotes}
-          downvotes={post.downvotes}
-      />
-    ));
-  };
-
   return (
-    <div className='div-community'>
-      <h1>{communityName}</h1>
-      {posts && mapPosts()}
-
+    <div className="div-community">
+      <CommunityCreate />
+      {communities.length === 0 && <p>No communities found</p>}
+      {communities.map((community) => (
+        <CommunityComponent
+          key={community.community_id}
+          community_id={community.community_id}
+          name={community.name}
+          description={community.description ?? ""}
+          image={community.image ?? null }
+          username={community.username}
+        />
+      ))}
     </div>
   )
 }
 
-export default Community
+export default Community;

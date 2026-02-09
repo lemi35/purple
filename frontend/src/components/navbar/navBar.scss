@@ -1,9 +1,10 @@
-.navBar{
+.navBar {
     display: flex;
     align-items: center;
+    flex-wrap: nowrap;
+    height: 50px;
     justify-content: space-between;
     padding: 10px 20px;
-    height: 35px;
     border-bottom: 1px solid grey;
     position: sticky;
     top: 0;
@@ -11,27 +12,28 @@
     width: 100%;
     z-index: 999;
 
-    .left{
+    .left {
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: center;
         //gap: 30px;
 
-        
 
-        .spanTitle{
+
+        .spanTitle {
             font-weight: bold;
             font-size: 20px;
             color: rgb(229, 213, 213);
         }
 
-        
+
 
     }
 
-    .middle{
+    .middle {
         display: flex;
+        flex: 1;
         flex-direction: row;
         align-items: center;
         justify-content: center;
@@ -39,40 +41,40 @@
     }
 
 
-    .right{
+    .right {
         display: flex;
         align-items: center;
         gap: 20px;
         padding-right: 20px;
 
-        svg{ //chat-icon
+        svg {
+            //chat-icon
             display: flex;
         }
 
-        .p-user{
+        .p-user {
             display: flex;
             align-items: center;
             gap: 20px;
             font-weight: 500;
             color: white;
-            
 
-            img{
+
+            img {
                 width: 30px;
                 height: 30px;
                 border-radius: 50%;
                 object-fit: cover;
-                border: 1px solid white;
+                border: 1px solid rgb(247, 241, 241);
             }
         }
 
-        .button{
-            background-color:rgb(208, 192, 192);
-            padding: 5px;
-            width: 100px;
+        .button {
+            background-color: rgb(208, 192, 192);
+            padding: 5px 15px;
             border-radius: 10px;
             height: 35px;
+            white-space: nowrap;
         }
     }
 }
-

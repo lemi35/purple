@@ -3,9 +3,22 @@ import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { validationResult } from "express-validator";
 import { authenticationMiddleware } from "../middleware/authenticationMiddleware";
+import multer from "multer";
+import path from "path";
 
 export const router = express.Router();
 const prisma = new PrismaClient();
+
+const storage = multer.diskStorage({
+	destination: function (req, file, cb) {
+		cb(null, "uploads/");
+	},
+	filename: function (req, file, cb) {
+		cb(null, "topic_at_" + Date.now() + path.extname(file.originalname));
+	}
+});
+
+const upload = multer({ storage: storage });
 
 router.use(express.json());
 
@@ -54,13 +67,17 @@ router.use(express.json());
  *                 $ref: '#/components/schemas/Topic'
  */
 router.get("/", async (req: Request, res: Response) => {
-	console.log(req.query.title)
+	//console.log(req.query.title)
 	if (!req.query.title) {
 		try {
 			const topics = await prisma.topic.findMany({
 				include: {
-					users: true,
-					posts: true,
+					owner: true,
+					posts: {
+						include: {
+							user: true
+						}
+					}
 				},
 			});
 			res.send(topics);
@@ -73,9 +90,10 @@ router.get("/", async (req: Request, res: Response) => {
 		try {
 			const topics = await prisma.topic.findMany({
 				where: {
-					title : req.query.title as string},
+					title: req.query.title as string
+				},
 				include: {
-					users: true,
+					owner: true,
 					posts: {
 						include: {
 							user: true
@@ -153,8 +171,8 @@ router.get("/:id", async (req: Request, res: Response) => {
  *       500:
  *         description: Internal server error
  */
-router.post("/", authenticationMiddleware, async (req: Request, res: Response) => {
-	console.log(req.id, req.user)
+router.post("/", upload.single("image"), authenticationMiddleware, async (req: Request, res: Response) => {
+	//console.log(req.id, req.user)
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
 		return res.status(400).json({ errors: errors.array() });
@@ -163,10 +181,10 @@ router.post("/", authenticationMiddleware, async (req: Request, res: Response) =
 	try {
 		const newTopic = await prisma.topic.create({
 			data: {
-				title: req.body.title,     
-				user_id: req.id,
-				post_id: null,
-				description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ac massa et nulla feugiat iaculis. Donec tellus sapien, molestie vel massa vitae, scelerisque eleifend urna",
+				title: req.body.title,
+				ownerId: Number(req.id),
+				image: req.file?.filename,
+				description: req.body.description || "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ac massa et nulla feugiat iaculis. Donec tellus sapien, molestie vel massa vitae, scelerisque eleifend urna",
 			},
 		});
 		res.json(newTopic);
@@ -249,9 +267,9 @@ router.put("/:id", async (req: Request, res: Response) => {
 router.delete("/:id", async (req: Request, res: Response) => {
 	try {
 		const deletedTopic = await prisma.topic.delete({
-			where: { 
+			where: {
 				topic_id: Number(req.params.id),
-				...(req.role == "admin" ? {} : {user_id : req.id})
+				...(req.role == "admin" ? {} : { ownerId: req.id })
 			},
 		});
 		res.send(deletedTopic);

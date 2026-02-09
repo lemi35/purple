@@ -15,14 +15,15 @@ import { router as chatsRouter } from "./routes/chats";
 import { router as messagesRouter } from "./routes/messages";
 import { router as authenticationRouter } from "./routes/authentication";
 import { router as imageRouter } from "./routes/images";
+import { router as communityRouter} from "./routes/communities"
 
 import bcrypt from "bcrypt";
 
 dotenv.config();
 const app = express();
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors({credentials: true, origin: "http://localhost:5173"}));
+app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
 app.use(express.json());
 app.use(express.static("uploads"));
 
@@ -73,6 +74,7 @@ app.use("/chats", chatsRouter);
 app.use("/messages", messagesRouter);
 app.use("/auth", authenticationRouter);
 app.use("/images", imageRouter);
+app.use("/communities", communityRouter)
 
 async function main() {
 	// Variables for testing
@@ -104,8 +106,6 @@ async function main() {
 				username: "adminuser",
 				password: hashedPassword,
 				role: "admin",
-				posts: posts,
-				follows: follows,
 			},
 		});
 		console.log(`

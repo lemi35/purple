@@ -1,4 +1,4 @@
-.form-container{
+.form-container {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -12,11 +12,11 @@
     max-width: 800px;
     box-sizing: border-box; // Include padding in the width calculation
 
-    h2{
+    h2 {
         margin: 0 0 10px;
     }
-    
-    label{
+
+    label {
         font-size: small;
     }
 
@@ -49,45 +49,58 @@
 
 
 
-    
-}
 
 
 
-//Title-title?
-.form-container > *:nth-child(2){
-    flex: 1 1 100%;
-}
 
-//Title
-.form-container > *:nth-child(3){
-    flex: 1 1 100%;
-    margin-bottom: 5px;
-}
 
-//Content-title?
-.form-container > *:nth-child(4){
-    flex: 1 1 100%;
-}
+    .label-title,
+    .label-content,
+    .label-topic {
+        flex: 1 1 100%;
+        margin-top: 10px;
+    }
 
-//Content
-.form-container > *:nth-child(5){
-    flex: 1 1 100%;
-    margin-bottom: 5px;
-}
+    .input-title,
+    .input-content,
+    .input-topic {
+        flex: 1 1 100%;
+        margin-bottom: 5px;
+        width: 100%;
+        box-sizing: border-box;
+    }
 
-//Choose file
-.form-container > *:nth-child(6){
-    flex: 1 1 100%;
-    margin-bottom: 10px;
-}
-    
-//submit
-.form-container > *:nth-child(7){
-    flex: 1 1 40%;
-}
+    .input-file {
+        flex: 1 1 100%;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
 
-//cancel
-.form-container > *:nth-child(8){
-    flex: 1 1 40%;
+    .button-group {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        justify-content: flex-end;
+
+        button {
+            padding: 8px 16px;
+            cursor: pointer;
+            background-color: white;
+            border: 1px solid grey;
+
+            &:hover {
+                background-color: #f0f0f0;
+            }
+
+            &.btn-submit {
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+
+                &:hover {
+                    background-color: #45a049;
+                }
+            }
+        }
+    }
 }

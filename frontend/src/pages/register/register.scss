@@ -5,78 +5,94 @@
 }
 
 .register {
-
     @include center-content();
     flex-direction: column;
     height: 100vh;
     width: 100%;
     text-align: center;
 
-        .card{
-            @include center-content();
-            background-color: rgb(240, 240, 240);
-            width: 50%;
-            border-radius: 10px;
-            min-height: 600px;
-        
-        .div-error{
+    .register-card {
+        @include center-content();
+        flex-direction: column;
+        background-color: rgb(240, 240, 240);
+        width: 50%;
+        border-radius: 10px;
+        min-height: 600px;
+        padding: 0;
+
+        @media (max-width: 768px) {
+            width: 90%;
+            min-height: auto;
+            padding: 20px 0;
+        }
+
+        .div-error {
             @include center-content();
             background-color: red;
             border: 5px solid red;
             width: 90%;
             border-radius: 5px;
             padding: 5px;
-            text-wrap: wrap;
-            margin: auto
-            
+            margin: auto;
         }
 
-        .div-success{
+        .div-success {
             @include center-content();
             background-color: greenyellow;
-            width: 100%;
+            width: 90%;
             border-radius: 5px;
             padding: 5px;
-            text-wrap: wrap;
-            margin: auto
-
+            margin: auto;
         }
 
-            h2{
-                @include center-content();
-                font-size: 40px;
-                margin-top: 0%;
-            }
-            
-            form{
-                @include center-content();
-                flex-direction: column;
-                gap: 30px;
-            
-                input {
-                    border: none;
-                    border-bottom: 1px solid lightgrey;
-                    padding: 10px 10px;
-                    width: 90%;
-                }
-            }
+        h1 {
+            @include center-content();
+            font-size: 50px;
+            padding: 0 10%;
+            line-height: 1;
 
-            p{
-                @include center-content();
-                font-size: 15px;
+            @media (max-width: 768px) {
+                font-size: 32px;
             }
+        }
 
-            button {
-                width: 100%;
-                padding: 10px;
+        h2 {
+            @include center-content();
+            font-size: 40px;
+            margin-top: 0;
+
+            @media (max-width: 768px) {
+                font-size: 24px;
+            }
+        }
+
+        form {
+            @include center-content();
+            flex-direction: column;
+            gap: 30px;
+            width: 100%;
+
+            input {
                 border: none;
-                background-color: rgb(127, 127, 125);
-                color: white;
-                font-weight: bold;
-                cursor: pointer;
-                margin-top: 5px;
+                border-bottom: 1px solid lightgrey;
+                padding: 10px;
+                width: 100%;
             }
-    }
+        }
 
-        
+        p {
+            font-size: 15px;
+        }
+
+        button {
+            @include center-content();
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: rgb(127, 127, 125);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    }
 }

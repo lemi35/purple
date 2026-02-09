@@ -10,13 +10,19 @@
     height: 100vh;
     width: 100%;
     text-align: center;
-  
-        .login-card{
-            @include center-content();
-            background-color: rgb(240, 240, 240);
-            width: 50%;
-            border-radius: 10px;
-            min-height: 600px;
+
+    .login-card {
+        @include center-content();
+        background-color: rgb(240, 240, 240);
+        width: 50%;
+        border-radius: 10px;
+        min-height: 600px;
+
+        @media (max-width: 768px) {
+            width: 90%;
+            min-height: auto;
+            padding: 20px 0;
+        }
 
         .div-error {
             @include center-content();
@@ -28,41 +34,49 @@
             text-wrap: wrap;
             margin: auto
         }
-            
-        h1{
+
+        h1 {
             @include center-content();
             font-size: 50px;
             padding: 0% 10% 0% 10%;
             line-height: 1;
-            
+
+            @media (max-width: 768px) {
+                font-size: 32px;
+            }
+
         }
-        
-        h2{
+
+        h2 {
             @include center-content();
             font-size: 40px;
             margin-top: 0%;
+
+            @media (max-width: 768px) {
+                font-size: 24px;
+            }
         }
-        
-        form{
+
+        form {
             @include center-content();
             flex-direction: column;
             gap: 30px;
-        
+
             input {
                 border: none;
                 border-bottom: 1px solid lightgrey;
                 padding: 10px 10px;
-                width: 90%;
+                width: 100%;
             }
         }
 
-    
+
 
         /*a{
             @include center-content();
             width: 100%;
         }*/
- button {
+        button {
             @include center-content();
             width: 100%;
             padding: 10px;

@@ -1,4 +1,5 @@
 import "./comments.scss";
+import moment from "moment";
 import CommentsContext from "../../contexts/CommentsContext";
 import UserType from "../../types/UserType";
 import { useContext } from 'react';
@@ -12,7 +13,7 @@ interface CommentsProps {
 
 const Comments: React.FC<CommentsProps> = ({ postId, users, comments }) => {
   const commentsContext = useContext(CommentsContext);
-  
+
   if (!commentsContext) {
     return <div>Loading...</div>;
   }
@@ -33,7 +34,7 @@ const Comments: React.FC<CommentsProps> = ({ postId, users, comments }) => {
             <div className="info">
               <span>{comment.content}</span>
             </div>
-            <span className="date">{comment.created_at}</span>
+            <span className="date">{moment(comment.created_at).fromNow()}</span>
           </div>
         );
       })}

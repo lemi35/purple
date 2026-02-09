@@ -1,6 +1,5 @@
 import "./friends.scss";
 import UserType from "../../types/UserType";
-//import ProfileComponent from "../../components/profile/ProfileComponent";
 
 
 interface FP {
@@ -16,7 +15,6 @@ const Friends: React.FC<FP> = ({user}) => {
             
             <h2>My friends here, add friends</h2>
 
-            {/* <ProfileComponent user={user}/> */}
         </div>
     )
 }

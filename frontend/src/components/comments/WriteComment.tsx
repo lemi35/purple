@@ -8,9 +8,9 @@ interface WriteCommentProps {
     addComment: (newComment: CommentType) => void;
 }
 
-export default function WriteComment({postId}: WriteCommentProps) {
-    
-    const initialState: CommentType = { 
+export default function WriteComment({ postId, addComment }: WriteCommentProps) {
+
+    const initialState: CommentType = {
         comment_id: 1,
         user_id: 1,
         post_id: postId,
@@ -19,34 +19,39 @@ export default function WriteComment({postId}: WriteCommentProps) {
     }
 
     const baseurl = "http://localhost:3001";
-    
+
     const [comment, setComment] = useState<CommentType>(initialState);
     //const [submit, setSubmit] = useState<CommentType>(initialState);
 
     function handleComment(e: ChangeEvent<HTMLTextAreaElement>) {
         e.preventDefault();
-        setComment({...comment, content: e.target.value})
+        setComment({ ...comment, content: e.target.value })
     }
-   
+
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        
+
         try {
-            await axios.post(`${baseurl}/comments`, comment, {withCredentials: true});
-            setComment(initialState)
+            const response = await axios.post(`${baseurl}/comments`, comment, { withCredentials: true });
+            console.log("Comment created:", response.data);
+
+            // Add the new comment to the local state so it renders immediately
+            addComment(response.data);
+
+            // Reset the form
+            setComment(initialState);
             /*if (fileInputRef.current) {
                 fileInputRef.current.value = ""; // Clear the file input
             }*/
-            console.log(comment)
         } catch (error) {
             console.error("error submitting comment:", error)
         }
-        
+
         //setSubmit(comment);
         //setComment(initialState);
         //console.log(submit.content)
     }
-    return(
+    return (
         <div className="commentForm">
             <form onSubmit={(e) => handleSubmit(e)}>
                 <textarea
