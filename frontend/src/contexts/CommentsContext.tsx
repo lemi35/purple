@@ -11,11 +11,11 @@ const CommentsContext = createContext<CommentsContextType | undefined>(undefined
 
 export const CommentsProvider: React.FC<{ children: ReactNode; postId: number }> = ({ children, postId }) => {
   const [comments, setComments] = useState<CommentType[]>([]);
-
+  const baseurl = import.meta.env.VITE_API_URL;
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/comments/post/${postId}`);
+        const response = await axios.get(`${baseurl}/comments/post/${postId}`);
         setComments(response.data);
       } catch (error) {
         console.error("Error fetching comments:", error);

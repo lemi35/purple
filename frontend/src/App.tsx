@@ -44,6 +44,7 @@ function App() {
 	const [contextUsername, setContextUsername] = useState(usernameFromCookie)
 	const [contextRole, setContextRole] = useState(roleFromCookie)
 	//const [communities, setCommunities] = useState<CommunityType[]>([]);
+	
 
 
 	const handleUserSelect = (user: UserType) => {
@@ -55,7 +56,9 @@ function App() {
 	};
 
 
-	const baseurl = "http://localhost:3001";
+	const baseurl = import.meta.env.VITE_API_URL;
+
+	//const baseurl = "http://localhost:3001";
 
 	useEffect(() => {
 		const fetchCurrentUser = async () => {

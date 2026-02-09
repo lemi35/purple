@@ -18,6 +18,10 @@ const CommunityComponent = ({
   description,
   image,
 }: CommunityProps) => {
+
+  const baseurl = import.meta.env.VITE_API_URL;
+
+
   const context = useContext(userContext);
   if (!context) {
     throw new Error(
@@ -45,7 +49,7 @@ const CommunityComponent = ({
         image
           ? image.startsWith("http")
             ? image
-            : `http://localhost:3001/${image}`
+            : `${baseurl}/${image}`
           : "https://placehold.co/300x200"
       }
       alt={name}

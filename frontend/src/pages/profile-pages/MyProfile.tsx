@@ -26,8 +26,8 @@ const Profile: React.FC<ProfileProps> = ({ currentUser }) => {
     const [posts, setPosts] = useState<PostWithUser[]>([]);
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [showProfileUpdateModal, setShowProfileUpdateModal] = useState(false);
-    
-    const baseurl = "http://localhost:3001";
+    const baseurl = import.meta.env.VITE_API_URL;
+    //const baseurl = "http://localhost:3001";
 
   
 

@@ -11,7 +11,8 @@ import "./topic.scss";
 
 const Topic: React.FC = () => {
   const { contextRole } = useContext(userContext) || {};
-  const baseurl = "http://localhost:3001";
+  //const baseurl = "http://localhost:3001";
+  const baseurl = import.meta.env.VITE_API_URL;
 
   const [topics, setTopics] = useState<TopicType[] | null>(null);
   const [newTopic, setNewTopic] = useState({ title: "", description: "" });

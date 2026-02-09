@@ -18,8 +18,8 @@ const ProfileUpdate: React.FC<ProfileUpdateProps> = ({ currentUser }) => {
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const [profileBannerFile, setProfileBannerFile] = useState<File | null>(null);
   const [successMessage, setSuccessMessage] = useState("");
-
-  const baseurl = "http://localhost:3001";
+  const baseurl = import.meta.env.VITE_API_URL;
+  //const baseurl = "http://localhost:3001";
 
   useEffect(() => {
     setProfileText(currentUser.profileText || "");

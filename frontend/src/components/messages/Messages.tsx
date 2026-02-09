@@ -13,7 +13,8 @@ interface MessagesProps {
 }
 
 const Messages: React.FC<MessagesProps> = ({ currentUser, users, selectedUser }) => {
-    const baseurl = "http://localhost:3001"; 
+    const baseurl = import.meta.env.VITE_API_URL;
+    //const baseurl = "http://localhost:3001"; 
     const [messages, setMessages] = useState<MessageType[]>([]);
     const [chatId, setChatId] = useState<number | null>(null);
 

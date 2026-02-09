@@ -14,8 +14,8 @@ import axios from 'axios';
 import CommunityType from '../../types/CommunityType';
 
 const LeftBar = () => {
-
-    const baseurl = "http://localhost:3001"
+	const baseurl = import.meta.env.VITE_API_URL;
+    //const baseurl = "http://localhost:3001"
     const [/*topics*/, setTopics] = useState([])
     const [/*communities*/, setCommunities] = useState<CommunityType[]>([])
 

@@ -19,6 +19,7 @@ interface TopicComponentProps extends topicInterface {
 }
 
 const topicComponent = ({ description, image, title, username,  refreshTopics }: TopicComponentProps) => {
+  const baseurl = import.meta.env.VITE_API_URL;
   const context = useContext(userContext);
   if (!context) {
     throw new Error('topicComponent must be used within a userContext.Provider');
@@ -42,7 +43,7 @@ const topicComponent = ({ description, image, title, username,  refreshTopics }:
           image
             ? image.startsWith("http") // external URL
               ? image
-              : `http://localhost:3001/${image}` // local backend
+              : `${baseurl}/${image}` // local backend
             : "https://placehold.co/200x200"
         }
         alt={title}

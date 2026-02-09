@@ -14,7 +14,9 @@ interface ChatLeftBarProps {
 }
 
 const ChatLeftBar: React.FC<ChatLeftBarProps> = ({ currentUser, onUserSelect }) => {
-    const baseurl = "http://localhost:3001";
+
+    const baseurl = import.meta.env.VITE_API_URL;
+    //const baseurl = "http://localhost:3001";
     const [users, setUsers] = useState<UserType[]>([]);
     const [chats, setChats] = useState<ChatType[]>([]);
 

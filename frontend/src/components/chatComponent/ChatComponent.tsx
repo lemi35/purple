@@ -14,7 +14,8 @@ interface ChatComponentProps {
 const ChatComponent: React.FC<ChatComponentProps> = ({ selectedUser, currentUser, chats }) => {
     const [selectedChat, setSelectedChat] = useState<ChatType | null>(null);
     const [users, setUsers] = useState<UserType[]>([]);
-	const baseurl = "http://localhost:3001"; 
+	//const baseurl = "http://localhost:3001"; 
+    const baseurl = import.meta.env.VITE_API_URL;
 
     // Filter chats based on selectedUser
     useEffect(() => {

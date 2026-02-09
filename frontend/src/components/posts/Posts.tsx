@@ -17,8 +17,8 @@ interface PostsProps {
 
 const Posts: React.FC<PostsProps> = ( {posts, refreshPosts} ) => {
 
-
-    const baseurl = "http://localhost:3001" 
+    const baseurl = import.meta.env.VITE_API_URL;
+    //const baseurl = "http://localhost:3001" 
 
     const getImageUrl = (image: string | undefined) => {
       if (!image) {

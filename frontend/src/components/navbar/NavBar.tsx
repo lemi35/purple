@@ -29,8 +29,8 @@ const NavBar: React.FC<NavBarProps> = ({ currentUser }) => {
   }
   const { contextUsername, setContextUsername, /*contextRole, setContextRole*/ } =
     context;
-  const baseurl = "http://localhost:3001";
-
+  //const baseurl = "http://localhost:3001";
+  const baseurl = import.meta.env.VITE_API_URL;
   useEffect(() => {
     const fetchUsers = async () => {
       try {

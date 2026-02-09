@@ -9,7 +9,8 @@ interface NewCommunity {
 }
 
 const CommunityCreate = () => {
-  const baseurl = "http://localhost:3001";
+  const baseurl = import.meta.env.VITE_API_URL;
+  //const baseurl = "http://localhost:3001";
   const [success, setSuccess] = useState(false);
 
   const [community, setCommunity] = useState<NewCommunity>({

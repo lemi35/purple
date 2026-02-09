@@ -11,6 +11,7 @@ interface ProfileBannerProps {
 }
 
 const ProfileBanner: React.FC<ProfileBannerProps> = ({ user }) => {
+  const baseurl = import.meta.env.VITE_API_URL;
   const context = useContext(userContext);
   const { contextUsername } = context || {};
   const isOwner = contextUsername === user.username;
@@ -29,7 +30,7 @@ const ProfileBanner: React.FC<ProfileBannerProps> = ({ user }) => {
     formData.append(fieldName, file);
 
     try {
-      await axios.put(`http://localhost:3001/users/update`, formData, {
+      await axios.put(`${baseurl}/users/update`, formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
@@ -55,7 +56,7 @@ const ProfileBanner: React.FC<ProfileBannerProps> = ({ user }) => {
             src={
               user.profileBanner.startsWith("http")
                 ? user.profileBanner
-                : `http://localhost:3001/${user.profileBanner}`
+                : `${baseurl}/${user.profileBanner}`
             }
             alt="Banner"
             className="banner-image"
@@ -87,7 +88,7 @@ const ProfileBanner: React.FC<ProfileBannerProps> = ({ user }) => {
                 src={
                   user.profileImage.startsWith("http")
                     ? user.profileImage
-                    : `http://localhost:3001/${user.profileImage}`
+                    : `${baseurl}/${user.profileImage}`
                 }
                 alt="Profile"
                 className="profile-image"

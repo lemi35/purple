@@ -11,7 +11,8 @@ interface ChatUserSearchProps {
 const ChatUserSearch: React.FC<ChatUserSearchProps> = ({ onUserForChatSelect }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [users, setUsers] = useState<UserType[]>([]);
-    const baseurl = 'http://localhost:3001';
+    //const baseurl = 'http://localhost:3001';
+    const baseurl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         const fetchUsers = async () => {

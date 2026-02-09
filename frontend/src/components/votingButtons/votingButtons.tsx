@@ -17,8 +17,8 @@ const VotingButtons: React.FC<{ upvotes: number, downvotes: number, post_id: num
   const [downVotesN, setDownVotesN] = useState(downvotes);
 
   const voteSum = upVotesN - downVotesN;
-
-  const baseurl = "http://localhost:3001";
+  const baseurl = import.meta.env.VITE_API_URL;
+  //const baseurl = "http://localhost:3001";
 
   const updateVotes = async (newUpvotes: number, newDownvotes: number) => {
     try {

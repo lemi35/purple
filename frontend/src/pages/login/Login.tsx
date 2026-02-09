@@ -11,7 +11,8 @@ const Login = () => {
 
   const { /*contextUsername, contextRole,*/ setContextUsername, setContextRole } = context;
   const navigate = useNavigate();
-  const baseurl = "http://localhost:3001";
+  //const baseurl = "http://localhost:3001";
+  const baseurl = import.meta.env.VITE_API_URL;
 
   const [username, setUsername] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);

@@ -21,7 +21,8 @@ interface PostWithUser extends PostType {
 
 const ProfileContent: React.FC<ProfileContentProps & { children?: React.ReactNode }> = ({ user, children }) => {
   const [myposts, setMyPosts] = useState<PostWithUser[]>([]);
-  const baseurl = "http://localhost:3001";
+  //const baseurl = "http://localhost:3001";
+  const baseurl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const getPosts = async () => {

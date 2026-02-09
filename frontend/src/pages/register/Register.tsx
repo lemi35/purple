@@ -3,8 +3,8 @@ import "./register.scss";
 import { Link } from "react-router-dom";
 
 const Register = () => {
-
-    const baseurl = "http://localhost:3001"
+    const baseurl = import.meta.env.VITE_API_URL;
+    //const baseurl = "http://localhost:3001"
     const [username, setUsername] = useState<null | string>(null)
     const [password, setPassword] = useState<null | string>(null)
     const [confirmPassword, setConfirmPassword] = useState<null | string>(null)

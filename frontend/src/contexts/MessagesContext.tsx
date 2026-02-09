@@ -16,11 +16,12 @@ interface MessagesProviderProps {
 
 export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children, chatId }) => {
   const [messages, setMessages] = useState<MessageType[]>([]);
+  const baseurl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/messages/chat/${chatId}`);
+        const response = await axios.get(`${baseurl}/messages/chat/${chatId}`);
         setMessages(response.data);
       } catch (error) {
         console.error("Error fetching messages:", error);

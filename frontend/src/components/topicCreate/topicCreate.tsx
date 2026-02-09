@@ -9,7 +9,8 @@ interface NewTopic {
 }
 
 const topicCreate = () => {
-  const baseurl = "http://localhost:3001";
+  const baseurl = import.meta.env.VITE_API_URL;
+  //const baseurl = "http://localhost:3001";
 
   const [post, setPost] = useState<NewTopic>({
     title: "",

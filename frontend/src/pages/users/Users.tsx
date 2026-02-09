@@ -11,7 +11,8 @@ interface UsersProps {
 }
 
 const Users: React.FC<UsersProps> = ({onUserSelect/* , user */}) => {
-    const baseurl = "http://localhost:3001" 
+    //const baseurl = "http://localhost:3001" 
+    const baseurl = import.meta.env.VITE_API_URL;
     const [users, setUsers] = useState<UserType[]>([]);
 
     useEffect(() => {

@@ -7,7 +7,8 @@ import * as React from "react";
 const DeleteAccount = () => {
 
     const navigate = useNavigate()
-    const baseurl = "http://localhost:3001"
+    const baseurl = import.meta.env.VITE_API_URL;
+    //const baseurl = "http://localhost:3001"
     const [registrationError, setRegistrationError] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string>("");
     const [confirmDelete, setConfirmDelete] = useState<boolean>(false)

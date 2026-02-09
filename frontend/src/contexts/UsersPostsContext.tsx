@@ -16,11 +16,12 @@ interface UsersPostsProviderProps {
 
 export const UsersPostsProvider: React.FC<UsersPostsProviderProps> = ({ children, userId }) => {
   const [posts, setPosts] = useState<PostType[]>([]);
+  const baseurl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/posts/user/${userId}`);
+        const response = await axios.get(`${baseurl}/posts/user/${userId}`);
         setPosts(response.data);
       } catch (error) {
         console.error("Error fetching posts:", error);

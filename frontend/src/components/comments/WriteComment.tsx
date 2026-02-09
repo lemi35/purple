@@ -17,8 +17,8 @@ export default function WriteComment({ postId, addComment }: WriteCommentProps) 
         created_at: "",
         content: "",
     }
-
-    const baseurl = "http://localhost:3001";
+    const baseurl = import.meta.env.VITE_API_URL;
+    //const baseurl = "http://localhost:3001";
 
     const [comment, setComment] = useState<CommentType>(initialState);
     //const [submit, setSubmit] = useState<CommentType>(initialState);

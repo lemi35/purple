@@ -13,8 +13,9 @@ interface PostCreateProps {
 }
 
 export default function PostCreate({ refreshPosts }: PostCreateProps) {
-  const [topics, setTopics] = useState<TopicType[]>([]);
-  const [post, setPost] = useState<PostType>({
+    const baseurl = import.meta.env.VITE_API_URL;
+    const [topics, setTopics] = useState<TopicType[]>([]);
+    const [post, setPost] = useState<PostType>({
     post_id: 0,
     user_id: 1,
     title: "",
@@ -30,7 +31,7 @@ export default function PostCreate({ refreshPosts }: PostCreateProps) {
   useEffect(() => {
     async function fetchTopics() {
       try {
-        const response = await axios.get("http://localhost:3001/topics");
+        const response = await axios.get(`${baseurl}/topics`);
         setTopics(response.data);
       } catch (error) {
         console.error("Error fetching topics:", error);
@@ -59,7 +60,7 @@ export default function PostCreate({ refreshPosts }: PostCreateProps) {
   const createGeneralDiscussionTopic = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:3001/topics",
+        baseurl,
         {
           title: "General Discussion",
         },
@@ -109,7 +110,7 @@ export default function PostCreate({ refreshPosts }: PostCreateProps) {
 
     try {
       const response = await axios.post(
-        "http://localhost:3001/posts",
+        baseurl,
         formData,
         {
           withCredentials: true,

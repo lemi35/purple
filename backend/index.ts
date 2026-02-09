@@ -19,11 +19,19 @@ import { router as communityRouter} from "./routes/communities"
 
 import bcrypt from "bcrypt";
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://snazzy-platypus-6381f4.netlify.app"
+];
+
 dotenv.config();
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.static("uploads"));
 

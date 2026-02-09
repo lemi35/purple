@@ -4,8 +4,8 @@ import "./changePassword.scss";
 import * as React from "react";
 
 const ChangePassword = () => {
-
-    const baseurl = "http://localhost:3001"
+    const baseurl = import.meta.env.VITE_API_URL;
+    //const baseurl = "http://localhost:3001"
     const [oldPassword, setOldPassword] = useState<null | string>(null)
     const [password, setPassword] = useState<null | string>(null)
     const [confirmPassword, setConfirmPassword] = useState<null | string>(null)

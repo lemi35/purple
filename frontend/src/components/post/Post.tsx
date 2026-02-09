@@ -33,6 +33,8 @@ const Post: React.FC<PostProps> = ({
   downvotes,
   refreshPosts,
 }) => {
+
+  const baseurl = import.meta.env.VITE_API_URL;
   const context = useContext(userContext);
   if (!context) {
     throw new Error("Post must be used within a userContext.Provider");
@@ -51,7 +53,7 @@ const Post: React.FC<PostProps> = ({
     const fetchComments = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3001/comments?postId=${post.post_id}`,
+          `${baseurl}/comments?postId=${post.post_id}`,
           { withCredentials: true },
         );
         setComments(response.data);
@@ -75,7 +77,7 @@ const Post: React.FC<PostProps> = ({
     if (typeof image === "string") {
       const isExternalUrl =
         image.startsWith("http://") || image.startsWith("https://");
-      return isExternalUrl ? image : `http://localhost:3001/${image}`;
+      return isExternalUrl ? image : `${baseurl}/${image}`;
     }
     // image is Blob or File: create an object URL and track it for cleanup
     const url = URL.createObjectURL(image);

@@ -13,13 +13,11 @@ const UserProfile: React.FC<UserProfileProps> = ({user}) => {
     if (!user) {
         return <div className="noSuchUser">There is no such user</div>;
   }
-    return (
-        
+    return (   
         <div className="profilePage">
             <h1>{user.username}'s Profile</h1>
             <ProfileComponent user={user}/>
         </div>
-        
     )
 }
 

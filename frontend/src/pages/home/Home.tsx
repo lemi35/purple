@@ -14,7 +14,8 @@ interface PostWithUser extends PostType {
 }
 
 const Home = () => {
-  const baseurl = "http://localhost:3001";
+  const baseurl = import.meta.env.VITE_API_URL;
+  //const baseurl = "http://localhost:3001";
   const [posts, setPosts] = useState<PostWithUser[]>([]);
   
   useEffect(() => {

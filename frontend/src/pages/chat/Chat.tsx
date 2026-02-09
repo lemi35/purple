@@ -17,8 +17,8 @@ interface ChatProps {
 const Chat: React.FC<ChatProps> = ({ currentUser, selectedUser }) => {
     const [chats, setChats] = useState<ChatType[]>([]);
     const [error, setError] = useState<string | null>(null);
-
-    const baseurl = "http://localhost:3001";
+    const baseurl = import.meta.env.VITE_API_URL;
+    //const baseurl = "http://localhost:3001";
 
     useEffect(() => {
         const fetchChats = async () => {
