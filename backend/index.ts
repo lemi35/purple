@@ -20,8 +20,8 @@ import { router as communityRouter} from "./routes/communities"
 import bcrypt from "bcrypt";
 
 const allowedOrigins = [
+  "https://snazzy-platypus-6381f4.netlify.app",
   "http://localhost:5173",
-  "https://snazzy-platypus-6381f4.netlify.app"
 ];
 
 dotenv.config();
@@ -31,18 +31,16 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: (origin, callback) => {
-      // allow server-to-server, curl, Postman (no origin)
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
       }
-
-      return callback(new Error("Not allowed by CORS"));
     },
     credentials: true
   })
 );
+
 app.use(express.json());
 app.use(express.static("uploads"));
 
