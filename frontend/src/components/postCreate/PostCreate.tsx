@@ -60,12 +60,10 @@ export default function PostCreate({ refreshPosts }: PostCreateProps) {
   const createGeneralDiscussionTopic = async () => {
     try {
       const response = await axios.post(
-        baseurl,
-        {
-          title: "General Discussion",
-        },
-        { withCredentials: true },
-      );
+      `${baseurl}/topics`,
+      { title: "General Discussion" },
+      { withCredentials: true },
+    );
       setTopics([...topics, response.data]);
     } catch (error) {
       console.error("Error creating General Discussion topic:", error);
