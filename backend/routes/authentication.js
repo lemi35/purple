@@ -135,20 +135,10 @@ exports.router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0,
         res.status(500).send();
     }
 }));
-
-// ===== COOKIE OPTIONS =====
-const cookieOptions = {
-maxAge: 24 * 60 * 60 * 1000, // 1 day
-httpOnly: false,             // allow frontend JS to read (change to true if you only want HTTP access)
-secure: true,                // must be true for HTTPS (Render/Netlify)
-sameSite: "None"             // allow cross-site cookies
-};
-
-// ===== LOGIN =====
 exports.router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("=== LOGIN REQUEST RECEIVED ===");
-    console.log("Username:", req.body.username);
-    console.log("Password provided:", !!req.body.password);
+    //console.log("Username:", req.body.username);
+    //console.log("Password provided:", !!req.body.password);
     const prismaUser = yield prisma.user.findUnique({
         where: {
             username: req.body.username,
@@ -170,12 +160,10 @@ exports.router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, fu
                 const accessToken = generateAccessToken(user);
                 const refreshToken = yield generateRefreshToken(user);
                 console.log("Tokens generated, setting cookies...");
-
-                
-                res.cookie("accesstoken", accessToken, cookieOptions);
-                res.cookie("refreshtoken", refreshToken, cookieOptions);
-                res.cookie("username", prismaUser.username, cookieOptions);
-                res.cookie("role", prismaUser.role, cookieOptions);
+                res.cookie("accesstoken", accessToken, { maxAge: 24 * 60 * 60 * 1000, httpOnly: false });
+                res.cookie("refreshtoken", refreshToken, { maxAge: 24 * 60 * 60 * 1000, httpOnly: false });
+                res.cookie("username", req.body.username, { maxAge: 24 * 60 * 60 * 1000, httpOnly: false });
+                res.cookie("role", prismaUser.role, { maxAge: 24 * 60 * 60 * 1000, httpOnly: false });
                 console.log("Sending success response...");
                 res.json({ accessToken: accessToken, refreshToken: refreshToken, username: prismaUser.username, role: prismaUser.role });
             }
