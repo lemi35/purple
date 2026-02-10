@@ -20,9 +20,12 @@ export const authenticationMiddleware = async (req: Request, res: Response, next
 			//console.log("trying to decode")
 			const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as any;
 			//console.log("decoding succesful");
-			/*res.cookie("token", token, {
-				httpOnly: true
-			});*/
+			res.cookie("accesstoken", token, {
+				httpOnly: true,        // prevents JS access to the cookie
+				sameSite: "none",      // allows cross-site cookie
+				secure: true,          // required for HTTPS
+				maxAge: 15 * 60 * 1000 // optional: match token expiration
+				});
 			console.log(decoded)
 			req.id = decoded.id
 			req.user = decoded.name
