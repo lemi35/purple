@@ -160,8 +160,22 @@ exports.router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, fu
                 const accessToken = generateAccessToken(user);
                 const refreshToken = yield generateRefreshToken(user);
                 console.log("Tokens generated, setting cookies...");
-                res.cookie("accesstoken", accessToken, { maxAge: 24 * 60 * 60 * 1000, httpOnly: false });
-                res.cookie("refreshtoken", refreshToken, { maxAge: 24 * 60 * 60 * 1000, httpOnly: false });
+
+
+                res.cookie("accesstoken", accessToken, {
+                httpOnly: true,
+                secure: true,      // required on Render (HTTPS)
+                sameSite: "none",  // required for Pages → Render
+                maxAge: 15 * 60 * 1000
+                });
+                res.cookie("refreshtoken", refreshToken, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "none",
+                maxAge: 7 * 24 * 60 * 60 * 1000
+                });
+
+
                 res.cookie("username", req.body.username, { maxAge: 24 * 60 * 60 * 1000, httpOnly: false });
                 res.cookie("role", prismaUser.role, { maxAge: 24 * 60 * 60 * 1000, httpOnly: false });
                 console.log("Sending success response...");

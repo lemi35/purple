@@ -19,27 +19,18 @@ import { router as communityRouter} from "./routes/communities"
 
 import bcrypt from "bcrypt";
 
-const allowedOrigins = [
-  "https://purple-b.pages.dev",
-  "http://localhost:5173",
-];
+
 
 dotenv.config();
 const app = express();
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cors({
+  origin: "https://purple-b.pages.dev",
+  credentials: true
+}));
+
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true
-  })
-);
 
 app.use(express.json());
 app.use(express.static("uploads"));

@@ -28,6 +28,9 @@ const authenticationMiddleware = (req, res, next) => __awaiter(void 0, void 0, v
     const token = accessToken; //authenticationHeader.split(" ")[1];
     if (process.env.ACCESS_TOKEN_SECRET) {
         try {
+            if (!token) {
+            return res.status(401).json({ message: "No access token" });
+            }
             //console.log("trying to decode")
             const decoded = jsonwebtoken_1.default.verify(token, process.env.ACCESS_TOKEN_SECRET);
             //console.log("decoding succesful");
