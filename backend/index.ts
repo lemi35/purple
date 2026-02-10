@@ -1,10 +1,11 @@
-import { PrismaClient } from "@prisma/client";
 import express from "express";
 import dotenv from "dotenv";
-import swaggerUI from "swagger-ui-express";
-import swaggerJsDoc from "swagger-jsdoc";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { PrismaClient } from "@prisma/client";
+
+import swaggerUI from "swagger-ui-express";
+import swaggerJsDoc from "swagger-jsdoc";
 
 import { router as usersRouter } from "./routes/users";
 import { router as postsRouter } from "./routes/posts";
@@ -15,16 +16,23 @@ import { router as chatsRouter } from "./routes/chats";
 import { router as messagesRouter } from "./routes/messages";
 import { router as authenticationRouter } from "./routes/authentication";
 import { router as imageRouter } from "./routes/images";
-import { router as communityRouter} from "./routes/communities"
+import { router as communityRouter } from "./routes/communities";
 
 import bcrypt from "bcrypt";
 
-
-
 dotenv.config();
-const app = express();
-app.use(express.urlencoded({ extended: true }));
 
+const app = express();
+const prisma = new PrismaClient();
+
+/**
+ *  REQUIRED FOR RENDER + SECURE COOKIES
+ */
+app.set("trust proxy", 1);
+
+/**
+ *  ORDER MATTERS — MIDDLEWARE FIRST
+ */
 app.use(cors({
   origin: "https://purple-b.pages.dev",
   credentials: true
@@ -33,56 +41,47 @@ app.use(cors({
 app.use(cookieParser());
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static("uploads"));
 
-
-const PORT = 3001;
-const prisma = new PrismaClient();
-
+/**
+ * Swagger
+ */
 const options = {
-	definition: {
-		openapi: "3.0.0",
-		info: {
-			title: "Purple",
-			version: "1.0.0",
-			description: "",
-		},
-		components: {
-			securitySchemes: {
-				bearerAuth: {
-					type: "http",
-					in: "header",
-					name: "Authorization",
-					description: "Bearer token to access these api endpoints",
-					scheme: "bearer",
-					bearerFormat: "JWT",
-				},
-			},
-		},
-		security: [
-			{
-				bearerAuth: [],
-			},
-		],
-		servers: [{ url: "https://purple-lfdw.onrender.com" }],
-	},
-	apis: ["./routes/*.ts"],
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Purple",
+      version: "1.0.0",
+    },
+    servers: [{ url: "https://purple-lfdw.onrender.com" }],
+  },
+  apis: ["./routes/*.ts"],
 };
 
 const swaggerSpec = swaggerJsDoc(options);
-
 app.use("/swagger", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
+/**
+ *  ROUTES LAST
+ */
+app.use("/auth", authenticationRouter);
 app.use("/users", usersRouter);
 app.use("/posts", postsRouter);
-app.use("/topics", topicsRouter)
+app.use("/topics", topicsRouter);
 app.use("/comments", commentsRouter);
 app.use("/follows", followsRouter);
 app.use("/chats", chatsRouter);
 app.use("/messages", messagesRouter);
-app.use("/auth", authenticationRouter);
 app.use("/images", imageRouter);
-app.use("/communities", communityRouter)
+app.use("/communities", communityRouter);
+
+const PORT = process.env.PORT || 3001;
+
+app.listen(PORT, () => {
+  console.log(`server running on port ${PORT}`);
+});
+
 
 async function main() {
 	// Variables for testing
