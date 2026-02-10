@@ -132,7 +132,6 @@ async function main() {
 
 	// Fetch all users and their data
 	const allUsers = await fetchAllUsers();
-	console.log("All users:", allUsers);
 }
 
 // Function to fetch all users and their data

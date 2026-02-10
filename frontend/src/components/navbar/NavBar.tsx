@@ -125,9 +125,7 @@ const NavBar: React.FC<NavBarProps> = ({ currentUser }) => {
                 Log out
               </button>
             </>
-          ) : (
-            <span>Loading...</span>
-          )}
+          ) : ""}
         </div>
       </div>
       {selectedUser ? (
