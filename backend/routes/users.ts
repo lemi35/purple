@@ -224,6 +224,33 @@ router.get("/authenticatedtest", authenticationMiddleware, async (req: Request, 
 }
 );
 
+router.get("/me", authenticationMiddleware, async (req: Request, res: Response) => {
+  try {
+    if (!req.id) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: req.id },
+      select: {
+        id: true,
+        username: true,
+        role: true,
+        profileText: true,
+        profileImage: true,
+        profileBanner: true
+      },
+    });
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 router.get(
 	"/admintest",
 	adminCheckMiddleware,

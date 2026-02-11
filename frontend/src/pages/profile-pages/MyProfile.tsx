@@ -1,6 +1,6 @@
 import "./profilePage.scss";
 import { useState, useEffect } from "react";
-import axios from "axios";
+//import axios from "axios";
 import ChangePassword from "../../components/changePassword/ChangePassword";
 import CreateTopic from "../../components/topicCreate/topicCreate";
 import DeleteAccount from "../../components/deleteAccount/DeleteAccount";
@@ -11,9 +11,9 @@ import PostType from "../../types/PostType";
 import Posts from "../../components/posts/Posts";
 import ProfileUpdate from "../../components/profile/profileUpdate/ProfileUpdate";
 
-interface ProfileProps {
+/*interface ProfileProps {
   currentUser: UserType | null;
-}
+}*/
 
 interface PostWithUser extends PostType {
   user: {
@@ -22,46 +22,64 @@ interface PostWithUser extends PostType {
   };
 }
 
-const Profile: React.FC<ProfileProps> = ({ currentUser }) => {
-    const [posts, setPosts] = useState<PostWithUser[]>([]);
-    const [showPasswordModal, setShowPasswordModal] = useState(false);
-    const [showProfileUpdateModal, setShowProfileUpdateModal] = useState(false);
-    const baseurl = import.meta.env.VITE_API_URL;
-    //const baseurl = "http://localhost:3001";
+const Profile: React.FC = () => {
+  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+  const [posts, setPosts] = useState<PostWithUser[]>([]);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [showProfileUpdateModal, setShowProfileUpdateModal] = useState(false);
 
-  
-
-
-  const userIsLoggedIn = document.cookie
-    .split("; ")
-    .find((row) => row.startsWith("refreshtoken"))
-    ?.split("=")[1];
-
-  if (!currentUser) {
-    return <div>No user logged in</div>;
-  }
-
-  
+  const baseurl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
+    fetchCurrentUser();
     getPosts();
   }, []);
 
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await fetch(`${baseurl}/users/me`, {
+        credentials: "include", // VERY IMPORTANT
+      });
+
+      if (!response.ok) {
+        setCurrentUser(null);
+      } else {
+        const user = await response.json();
+        setCurrentUser(user);
+      }
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      setCurrentUser(null);
+    } finally {
+      setLoadingUser(false);
+    }
+  };
+
   const getPosts = async () => {
     try {
-      const posts = await axios.get(`${baseurl}/posts`);
-      const sortedPosts = posts.data.sort(
-        (
-          a: PostWithUser,
-          b: PostWithUser, //Sorts data so that the newest post is first
-        ) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      const response = await fetch(`${baseurl}/posts`);
+      const data = await response.json();
+
+      const sortedPosts = data.sort(
+        (a: PostWithUser, b: PostWithUser) =>
+          new Date(b.created_at).getTime() -
+          new Date(a.created_at).getTime()
       );
+
       setPosts(sortedPosts);
     } catch (error) {
       console.error("error fetching posts:", error);
     }
   };
+
+  if (loadingUser) {
+    return <div>Loading...</div>;
+  }
+
+  if (!currentUser) {
+    return <div>No user logged in</div>;
+  }
 
 
 
@@ -113,16 +131,16 @@ const Profile: React.FC<ProfileProps> = ({ currentUser }) => {
         <div className="action-card">
           <CreateTopic />
         </div>
-        {userIsLoggedIn && (
+       
           <div className="action-card">
             <ChangePassword />
           </div>
-        )}
-        {userIsLoggedIn && (
+        
+     
           <div className="action-card">
             <DeleteAccount />
           </div>
-        )}
+        
       </ProfileContent>
     </div>
   );
