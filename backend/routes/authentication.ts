@@ -2,244 +2,128 @@ import { PrismaClient } from "@prisma/client";
 import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+
 export const router = express.Router();
 const prisma = new PrismaClient();
 
-/**
- * @swagger
- * components:
- *   schemas:
- *     Auth:
- *       type: object
- *       required:
- *         - username
- *         - password
- *       example:
- *         username: string
- *         password: string
- */
+const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET!;
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET!;
 
-/**
- * @swagger
- * tags:
- *   name: Auth
- * /auth/login:
- *   post:
- *     summary: Login
- *     tags: [Auth]
- *     security: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Auth'
- *     responses:
- *       200:
- *         description: The created user.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Auth'
- *       500:
- *         description: Some server error
- * /auth/register:
- *   post:
- *     summary: Register
- *     tags: [Auth]
- *     security: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Auth'
- *     responses:
- *       200:
- *         description: The created user.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Auth'
- *       500:
- *         description: Some server error
- * /auth/token:
- *   post:
- *     summary: Get a new access token if your refresh token is valid.
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties: 
- *               username: string
- *               token: string
- *             example: 
- *               username: username you used to log in
- *               token: insert your REFRESH token here (you can get it by logging in)
- *     responses:
- *       200:
- *         description: The created user.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Auth'
- *       401:
- *         description: Some server error
- */
+// --- Helper functions ---
+const generateAccessToken = (user: { name: string; id: number; role: string | null }) =>
+  jwt.sign(user, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
 
+const generateRefreshToken = async (user: { name: string; id: number; role: string | null }) => {
+  const refreshToken = jwt.sign(user, REFRESH_TOKEN_SECRET, { expiresIn: "1h" });
+  const tokenExpires = new Date();
+  tokenExpires.setHours(tokenExpires.getHours() + 1);
 
+  await prisma.user.update({
+    where: { username: user.name },
+    data: { token: refreshToken, tokenExpire: tokenExpires }
+  });
 
+  return refreshToken;
+};
+
+// --- REGISTER ---
 router.post("/register", async (req, res) => {
-	/*
-	if (req.body.username == null || req.body.password == null) {
-		res.status(500).send();
-	}
-	*/
-	try {
-		const salt = await bcrypt.genSalt();
-		const hashedPassword = await bcrypt.hash(req.body.password, salt);
+  const { username, password } = req.body;
+  if (!username || !password) return res.status(400).send("Username and password required");
 
-		const userExists = await prisma.user.findFirst({
-			where: {
-				username: req.body.username,
-			},
-		});
+  try {
+    const userExists = await prisma.user.findFirst({ where: { username } });
+    if (userExists) return res.status(400).send("This username already exists");
 
-		if (userExists != null) {
-			return res.status(400).send("This username already exists");
-		}
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await prisma.user.create({
+      data: {
+        username,
+        password: hashedPassword,
+        role: "user",
+        profileText: "profile text",
+        profileImage: "url to profile image"
+      }
+    });
 
-		const prismaUser = await prisma.user.create({
-			data: {
-				username: req.body.username,
-				password: hashedPassword,
-				role: "user",
-				profileText: "profile text",
-				profileImage: "url to profile image",
-			},
-		});
-		//console.log(`Created a new user: ${req.body.username} `);
-		res.status(200).send(prismaUser);
-	} catch (error) {
-		res.status(500).send();
-	}
+    res.status(201).json(newUser);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
 });
 
+// --- LOGIN ---
 router.post("/login", async (req, res) => {
-	console.log("=== LOGIN REQUEST RECEIVED ===");
-	//console.log("Username:", req.body.username);
-	//console.log("Password provided:", !!req.body.password);
+  const { username, password } = req.body;
+  if (!username || !password) return res.status(400).send("Username and password required");
 
-	const prismaUser = await prisma.user.findUnique({
-		where: {
-			username: req.body.username,
-		},
-	});
+  try {
+    const user = await prisma.user.findUnique({ where: { username } });
+    if (!user) return res.status(404).send("User not found");
 
-	if (prismaUser == null) {
-		console.log("User not found:", req.body.username);
-		return res.status(400).send("Cannot find user");
-	}
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) return res.status(401).send("Incorrect password");
 
-	console.log("User found, comparing passwords...");
-	try {
-		if (await bcrypt.compare(req.body.password, prismaUser.password)) {
-			console.log("Password correct! Generating tokens...");
-			console.log("prismauser", prismaUser)
-			const user = { name: prismaUser.username, id: prismaUser.id, role: prismaUser.role };
-			if (process.env.ACCESS_TOKEN_SECRET) {
-				console.log("ACCESS_TOKEN_SECRET exists, generating tokens...");
-				const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+    const tokenData = { name: user.username, id: user.id, role: user.role };
+    const accessToken = generateAccessToken(tokenData);
+    const refreshToken = await generateRefreshToken(tokenData);
 
-				//const accessToken = generateAccessToken(user);
-				
-				const refreshToken = await generateRefreshToken(user);
-				console.log("Tokens generated, setting cookies...");
-				res.cookie("accesstoken", accessToken, { maxAge: 24 * 60 * 60 * 1000, httpOnly: false });
-				res.cookie("refreshtoken", refreshToken, { maxAge: 24 * 60 * 60 * 1000, httpOnly: false });
-				res.cookie("username", req.body.username, { maxAge: 24 * 60 * 60 * 1000, httpOnly: false });
-				res.cookie("role", prismaUser.role, { maxAge: 24 * 60 * 60 * 1000, httpOnly: false });
-				console.log("Sending success response...");
-				res.json({ accessToken: accessToken, refreshToken: refreshToken, username: prismaUser.username, role: prismaUser.role });
-			}
-			else {
-				console.log("ERROR: Access token is not defined");
-				res.status(500).send("Server configuration error");
-			}
-		} else {
-			console.log("Password incorrect");
-			res.send("Incorrect password");
-		}
-	} catch (error) {
-		console.log("ERROR in login:", error);
-		res.json(error);
-	}
+    // --- Set cookies for cross-origin ---
+    res.cookie("accesstoken", accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 15 * 60 * 1000, // 15 min
+      path: "/"
+    });
+
+    res.cookie("refreshtoken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 60 * 60 * 1000, // 1 hour
+      path: "/"
+    });
+
+    res.json({
+      message: "Login successful",
+      username: user.username,
+      role: user.role
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
 });
 
-const generateAccessToken = (user: { name: string, id: number, role: string | null }) => {
-	if (process.env.ACCESS_TOKEN_SECRET) return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
-};
-
-const generateRefreshToken = async (user: { name: string, id: number, role: string | null }) => {
-	if (!process.env.REFRESH_TOKEN_SECRET) { console.log("missing REFRESH_TOKEN_SECRET"); return; }
-	const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
-	//const prismaUser = await prisma.users.findUnique({where: {username: user}});
-
-	const tokenExpires = new Date(new Date());
-	tokenExpires.setHours(tokenExpires.getHours() + 1);
-	tokenExpires.toISOString();
-
-
-	try {
-		const prismaUser = await prisma.user.update({
-			where: {
-				username: user.name
-			},
-			data: {
-				token: refreshToken,
-				tokenExpire: tokenExpires
-			}
-		});
-		return prismaUser.token;
-	} catch (error) {
-		console.log(error);
-	}
-
-
-};
-
+// --- REFRESH TOKEN ---
 router.post("/token", async (req, res) => {
-	const refreshToken = req.body.token;
-	if (refreshToken == null) {
-		return res.sendStatus(403);
+  const refreshToken = req.cookies.refreshtoken;
+  if (!refreshToken) return res.status(403).send("No refresh token");
+
+  try {
+    const user = await prisma.user.findFirst({ where: { token: refreshToken } });
+    if (!user) return res.status(403).send("Invalid refresh token");
+
+    if (new Date() > new Date(user.tokenExpire ?? 0)) {
+		return res.status(403).send("Refresh token expired");
 	}
 
-	try {
-		const prismaUser = await prisma.user.findUnique({
-			where: {
-				username: req.body.username
-			}
-		});
-		if (prismaUser && prismaUser.tokenExpire) {
-			if (new Date() < prismaUser.tokenExpire) {
-				const user = { name: req.body.username, id: prismaUser.id, role: prismaUser.role };
-				const accessToken = generateAccessToken(user);
-				res.json({ accessToken: accessToken });
-			}
-			else {
-				return res.status(403).send("Your token has expired, please login to get a new token");
+    const tokenData = { name: user.username, id: user.id, role: user.role };
+    const accessToken = generateAccessToken(tokenData);
 
-			}
+    res.cookie("accesstoken", accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 15 * 60 * 1000,
+      path: "/"
+    });
 
-		} else {
-			return res.status(403).send("Invalid token, please login to get a new token");
-		}
-
-	} catch (error) {
-		console.log(error);
-	}
-
+    res.json({ message: "New access token generated" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
 });

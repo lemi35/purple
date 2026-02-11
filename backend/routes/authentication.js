@@ -117,7 +117,9 @@ exports.router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0,
             },
         });
         if (userExists != null) {
-            return res.status(400).send("This username already exists");
+            return res.status(400).json({
+                message: "This username already exists"
+            });
         }
         const prismaUser = yield prisma.user.create({
             data: {
