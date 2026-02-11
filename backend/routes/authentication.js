@@ -156,8 +156,8 @@ exports.router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, fu
             const user = { name: prismaUser.username, id: prismaUser.id, role: prismaUser.role };
             if (process.env.ACCESS_TOKEN_SECRET) {
                 console.log("ACCESS_TOKEN_SECRET exists, generating tokens...");
-                //const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-                const accessToken = generateAccessToken(user);
+                const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+                //const accessToken = generateAccessToken(user);
                 const refreshToken = yield generateRefreshToken(user);
                 console.log("Tokens generated, setting cookies...");
 
