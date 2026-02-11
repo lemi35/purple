@@ -42,10 +42,16 @@ const Profile: React.FC = () => {
         credentials: "include", // VERY IMPORTANT
       });
 
+      console.log("Status:", response.status);
+
       if (!response.ok) {
+        const text = await response.text();
+        console.log("Error body:", text);
         setCurrentUser(null);
+
       } else {
         const user = await response.json();
+        console.log("User from backend:", user);
         setCurrentUser(user);
       }
     } catch (error) {
