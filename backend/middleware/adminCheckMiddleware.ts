@@ -48,7 +48,7 @@ export const adminCheckMiddleware = async (req:Request,res:Response,next:NextFun
 						});
 						if (isAdmin) {
 							if (isAdmin.role == "admin") {
-								res.cookie("accesstoken", newAccessToken, {maxAge: 24 * 60 * 60 * 1000, httpOnly: false});
+								res.cookie("accessToken", newAccessToken, {maxAge: 24 * 60 * 60 * 1000, httpOnly: false});
 								next();
 							}
 							else {

@@ -70,7 +70,7 @@ router.post("/login", async (req, res) => {
     const refreshToken = await generateRefreshToken(tokenData);
 
     // --- Set cookies for cross-origin ---
-    res.cookie("accesstoken", accessToken, {
+    res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: true,
       sameSite: "none",
@@ -78,7 +78,7 @@ router.post("/login", async (req, res) => {
       path: "/"
     });
 
-    res.cookie("refreshtoken", refreshToken, {
+    res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: "none",
@@ -99,7 +99,7 @@ router.post("/login", async (req, res) => {
 
 // --- REFRESH TOKEN ---
 router.post("/token", async (req, res) => {
-  const refreshToken = req.cookies.refreshtoken;
+  const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.status(403).send("No refresh token");
 
   try {
@@ -113,7 +113,7 @@ router.post("/token", async (req, res) => {
     const tokenData = { name: user.username, id: user.id, role: user.role };
     const accessToken = generateAccessToken(tokenData);
 
-    res.cookie("accesstoken", accessToken, {
+    res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: true,
       sameSite: "none",

@@ -226,12 +226,12 @@ router.get("/authenticatedtest", authenticationMiddleware, async (req: Request, 
 
 router.get("/me", authenticationMiddleware, async (req: Request, res: Response) => {
   try {
-    if (!req.id) {
+    if (!req.user) {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
     const user = await prisma.user.findUnique({
-      where: { id: req.id },
+      where: { username: req.user },
       select: {
         id: true,
         username: true,

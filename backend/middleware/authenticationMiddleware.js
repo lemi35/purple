@@ -45,18 +45,18 @@ const authenticationMiddleware = (req, res, next) => __awaiter(void 0, void 0, v
             next();
         }
         catch (error) {
-            if (req.cookies.refreshtoken) {
+            if (req.cookies.refreshToken) {
                 //console.log("access token decoding failed, checking refresh token validity")
                 try {
                     const user = yield prisma.user.findFirst({
                         where: {
-                            token: req.cookies.refreshtoken
+                            token: req.cookies.refreshToken
                         }
                     });
                     if (user) {
                         const newAccessToken = generateAccessToken({ name: user.username, id: user.id, role: user.role });
                         //console.log(newAccessToken)
-                        res.cookie("accesstoken", newAccessToken, { maxAge: 24 * 60 * 60 * 1000, httpOnly: false });
+                        res.cookie("accessToken", newAccessToken, { maxAge: 24 * 60 * 60 * 1000, httpOnly: false });
                         //console.log("new access token generated");
                         req.user = user.username;
                         req.id = user.id;

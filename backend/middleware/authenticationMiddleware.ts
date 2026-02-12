@@ -22,8 +22,8 @@ export const authenticationMiddleware = async (
   console.log("auth middleware");
   console.log("Cookies received:", req.cookies);
 
-  const accessToken = req.cookies.accesstoken;
-  const refreshToken = req.cookies.refreshtoken;
+  const accessToken = req.cookies.accessToken;
+  const refreshToken = req.cookies.refreshToken;
 
   if (!accessToken) {
     return res.status(401).json({ message: "No access token" });
@@ -64,7 +64,7 @@ export const authenticationMiddleware = async (
       });
 
       // ✅ Set NEW access token cookie (IMPORTANT: proper options)
-      res.cookie("accesstoken", newAccessToken, {
+      res.cookie("accessToken", newAccessToken, {
         httpOnly: true,
         secure: true,
         sameSite: "none",

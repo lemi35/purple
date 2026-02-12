@@ -102,7 +102,7 @@ const prisma = new client_1.PrismaClient();
  *       401:
  *         description: Some server error
  */
-exports.router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     /*
     if (req.body.username == null || req.body.password == null) {
         res.status(500).send();
@@ -119,7 +119,7 @@ exports.router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0,
         if (userExists != null) {
             return res.status(400).json({
                 message: "This username already exists"
-            });
+                });
         }
         const prismaUser = yield prisma.user.create({
             data: {
@@ -137,7 +137,7 @@ exports.router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0,
         res.status(500).send();
     }
 }));
-exports.router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("=== LOGIN REQUEST RECEIVED ===");
     //console.log("Username:", req.body.username);
     //console.log("Password provided:", !!req.body.password);
@@ -164,13 +164,13 @@ exports.router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, fu
                 console.log("Tokens generated, setting cookies...");
 
 
-                res.cookie("accesstoken", accessToken, {
+                res.cookie("accessToken", accessToken, {
                 httpOnly: true,
                 secure: true,      // required on Render (HTTPS)
                 sameSite: "none",  // required for Pages → Render
                 maxAge: 15 * 60 * 1000
                 });
-                res.cookie("refreshtoken", refreshToken, {
+                res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
                 secure: true,
                 sameSite: "none",
@@ -228,7 +228,7 @@ const generateRefreshToken = (user) => __awaiter(void 0, void 0, void 0, functio
         console.log(error);
     }
 });
-exports.router.post("/token", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/token", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = req.body.token;
     if (refreshToken == null) {
         return res.sendStatus(403);
@@ -257,3 +257,5 @@ exports.router.post("/token", (req, res) => __awaiter(void 0, void 0, void 0, fu
         console.log(error);
     }
 }));
+
+export default router;

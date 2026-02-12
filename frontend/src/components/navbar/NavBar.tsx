@@ -74,9 +74,9 @@ const NavBar: React.FC<NavBarProps> = ({ currentUser }) => {
 
   const handleLogout = () => {
     document.cookie =
-      "accesstoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     document.cookie =
-      "refreshtoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     document.cookie =
       "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     document.cookie = "role=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";

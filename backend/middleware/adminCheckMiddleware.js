@@ -60,7 +60,7 @@ const adminCheckMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 
                         });
                         if (isAdmin) {
                             if (isAdmin.role == "admin") {
-                                res.cookie("accesstoken", newAccessToken, { maxAge: 24 * 60 * 60 * 1000, httpOnly: false });
+                                res.cookie("accessToken", newAccessToken, { maxAge: 24 * 60 * 60 * 1000, httpOnly: false });
                                 next();
                             }
                             else {
