@@ -1,9 +1,13 @@
 import { useState } from "react";
 import "./register.scss";
+import { useNavigate } from "react-router-dom";
+
 import { Link } from "react-router-dom";
 
 const Register = () => {
     const baseurl = import.meta.env.VITE_API_URL;
+    const navigate = useNavigate();
+
     //const baseurl = "http://localhost:3001"
     const [username, setUsername] = useState<null | string>(null)
     const [password, setPassword] = useState<null | string>(null)
@@ -53,7 +57,7 @@ const Register = () => {
 
             const data = await response.json(); // actual response from backend
             console.log("Registration response:", data);
-
+            navigate("/login");
             handleSuccessTimer();
         } catch (error) {
             console.error(error);
@@ -95,4 +99,4 @@ const Register = () => {
     )
 }
 
-export default Register
+export default Register;

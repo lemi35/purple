@@ -30,9 +30,16 @@ const MyProfile = ({ currentUser }: MyProfileProps) => {
   const [showProfileUpdateModal, setShowProfileUpdateModal] = useState(false);
 
   const baseurl = import.meta.env.VITE_API_URL;
+  const fetchCurrentUser = async () => {
+    const res = await fetch(`${baseurl}/users/me`, {
+      credentials: "include", // send cookie
+    });
+    const data = await res.json();
+    console.log("Logged-in user:", data);
+  };
 
   useEffect(() => {
-    
+    fetchCurrentUser();
     getPosts();
   }, []);
 
