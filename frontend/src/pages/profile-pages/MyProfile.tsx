@@ -91,6 +91,7 @@ const Profile: React.FC = () => {
 
   return (
     <div className="profilePage">
+      <h2>User {currentUser.username} is logged in</h2>
       <ProfileContent user={currentUser}>
 
         <button onClick={() => setShowPasswordModal(true)} className="action-btn" style={{ backgroundColor: "#5E3078" }}>

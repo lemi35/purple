@@ -79,7 +79,7 @@ const generateRefreshToken = async (user: { name: string; id: number; role: stri
 
 // --- REGISTER ---
 router.post("/register", async (req, res) => {
-  console.log("REGISTER BODY:", req.body); // 👈 ADD THIS LINE
+  console.log("REGISTER BODY:", req.body); 
 
   const { username, password } = req.body;
 
@@ -141,6 +141,8 @@ router.post("/register", async (req, res) => {
 
 // --- LOGIN ---
 router.post("/login", async (req, res) => {
+	console.log("LOGIN BODY:", req.body); 
+
   const { username, password } = req.body;
   if (!username || !password) return res.status(400).send("Username and password required");
 
