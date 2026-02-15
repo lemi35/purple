@@ -62,6 +62,12 @@ const options = {
 const swaggerSpec = swaggerJsDoc(options);
 app.use("/swagger", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 
+app.get("/", (req, res) => {
+  res.json({
+    status: "ok",
+    message: "Purple API is running",
+  });
+});
 /**
  *  ROUTES LAST
  */
