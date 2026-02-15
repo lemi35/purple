@@ -6,6 +6,17 @@ import { PrismaClient } from "@prisma/client";
 
 import swaggerUI from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
+const app = express();
+
+app.use(cors({
+  origin: "https://purple-b.pages.dev",
+  credentials: true, // allow cookies
+}));
+
+app.options("*", cors({
+  origin: "https://purple-b.pages.dev",
+  credentials: true,
+})); // respond to preflight
 
 import { router as usersRouter } from "./routes/users";
 import { router as postsRouter } from "./routes/posts";
@@ -22,7 +33,6 @@ import bcrypt from "bcrypt";
 
 dotenv.config();
 
-const app = express();
 const prisma = new PrismaClient();
 
 /**
@@ -33,10 +43,7 @@ app.set("trust proxy", 1);
 /**
  *  ORDER MATTERS — MIDDLEWARE FIRST
  */
-app.use(cors({
-  origin: "https://purple-b.pages.dev",
-  credentials: true
-}));
+
 
 app.use(cookieParser());
 

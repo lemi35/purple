@@ -39,7 +39,7 @@ const Profile: React.FC = () => {
   const fetchCurrentUser = async () => {
     try {
       const response = await fetch(`${baseurl}/users/me`, {
-        credentials: "include", // VERY IMPORTANT
+        credentials: "include",
       });
 
       console.log("Status:", response.status);
