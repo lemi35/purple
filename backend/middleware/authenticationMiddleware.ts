@@ -19,8 +19,9 @@ export const authenticationMiddleware = async (
   res: Response,
   next: NextFunction
 ) => {
-  console.log("auth middleware");
-  console.log("Cookies received:", req.cookies);
+
+  console.log("Cookies:", req.cookies);
+  console.log("Access token:", req.cookies.accessToken);
 
   const accessToken = req.cookies.accessToken;
   const refreshToken = req.cookies.refreshToken;
