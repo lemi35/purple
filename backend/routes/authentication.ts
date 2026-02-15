@@ -9,6 +9,13 @@ const prisma = new PrismaClient();
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET!;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET!;
 
+/**
+ * @swagger
+ * tags:
+ *   name: Auth
+ *   description: Authentication endpoints
+ */
+
 // --- Helper functions ---
 const generateAccessToken = (user: { name: string; id: number; role: string | null }) =>
   jwt.sign(user, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
@@ -25,6 +32,50 @@ const generateRefreshToken = async (user: { name: string; id: number; role: stri
 
   return refreshToken;
 };
+
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Auth]
+ *     security: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: johndoe
+ *               password:
+ *                 type: string
+ *                 example: mysecurepassword
+ *     responses:
+ *       201:
+ *         description: User successfully created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 username:
+ *                   type: string
+ *                 role:
+ *                   type: string
+ *       400:
+ *         description: Username already exists or missing fields
+ *       500:
+ *         description: Server error
+ */
+
 
 // --- REGISTER ---
 router.post("/register", async (req, res) => {
@@ -62,6 +113,30 @@ router.post("/register", async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 });
+
+
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Login user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login successful
+ */
+
 
 
 // --- LOGIN ---
