@@ -56,6 +56,8 @@ const Login = () => {
       }
 
       console.log("LOGIN SUCCESS");
+      const data = await loginResponse.json(); // actual response from backend
+      console.log("Registration response:", data);
 
       // 2️⃣ FETCH CURRENT USER
       const meResponse = await fetch(`${baseurl}/users/me`, {
