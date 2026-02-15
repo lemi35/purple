@@ -11,10 +11,9 @@ import PostType from "../../types/PostType";
 import Posts from "../../components/posts/Posts";
 import ProfileUpdate from "../../components/profile/profileUpdate/ProfileUpdate";
 
-/*interface ProfileProps {
+interface MyProfileProps {
   currentUser: UserType | null;
-}*/
-
+}
 interface PostWithUser extends PostType {
   user: {
     username: string;
@@ -22,22 +21,21 @@ interface PostWithUser extends PostType {
   };
 }
 
-const Profile: React.FC = () => {
-  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+const Profile = ({ currentUser }: MyProfileProps) => {
+  //const [currentUser, setCurrentUser] = useState<UserType | null>(null);
   const [posts, setPosts] = useState<PostWithUser[]>([]);
-  const [loadingUser, setLoadingUser] = useState(true);
+  //const [loadingUser, setLoadingUser] = useState(true);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showProfileUpdateModal, setShowProfileUpdateModal] = useState(false);
 
   const baseurl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    fetchCurrentUser();
-    fetchCurrentUser2();
+    
     getPosts();
   }, []);
 
-  const fetchCurrentUser = async () => {
+  /*const fetchCurrentUser = async () => {
     try {
       const response = await fetch(`${baseurl}/users/me`, {
         credentials: "include",
@@ -61,9 +59,9 @@ const Profile: React.FC = () => {
     } finally {
       setLoadingUser(false);
     }
-  };
+  };*/
 
-  const fetchCurrentUser2 = async () => {
+  /*const fetchCurrentUser2 = async () => {
     try {
       const response = await fetch(`${baseurl}/me`, {
         credentials: "include",
@@ -87,7 +85,7 @@ const Profile: React.FC = () => {
     } finally {
       setLoadingUser(false);
     }
-  };
+  };*/
 
   const getPosts = async () => {
     try {
@@ -106,9 +104,7 @@ const Profile: React.FC = () => {
     }
   };
 
-  if (loadingUser) {
-    return <div>Loading...</div>;
-  }
+ 
 
   if (!currentUser) {
     return <div>No user logged in</div>;

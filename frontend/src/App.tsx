@@ -4,7 +4,6 @@ import {
 	Routes,
 	Route,
 	Outlet,
-	useNavigate,
 	Navigate
 } from "react-router-dom";
 import LeftBar from "./components/leftbar/LeftBar";
@@ -27,13 +26,14 @@ import Topic from "./pages/topic/Topic";
 import Community from "./pages/community/Community";
 import { UsersProvider } from "./contexts/UsersContext";
 import userContext from "./contexts/UserContext";
+
 //import CommunityType from "./types/CommunityType";
 
 
 
 function App() {
-	const usernameFromCookie = document.cookie.split("; ").find((row) => row.startsWith("username="))?.split("=")[1];
-	const roleFromCookie = document.cookie.split("; ").find((row) => row.startsWith("role="))?.split("=")[1];
+	//const usernameFromCookie = document.cookie.split("; ").find((row) => row.startsWith("username="))?.split("=")[1];
+	//const roleFromCookie = document.cookie.split("; ").find((row) => row.startsWith("role="))?.split("=")[1];
 
 	const [currentUser, setCurrentUser] = useState<UserType | null>(null);
 	const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
@@ -41,8 +41,11 @@ function App() {
 	const [users, /*setUsers*/] = useState<UserType[]>([]);
 	const [chats, /*setChats*/] = useState<ChatType[]>([]);
 	const [clickedUser, setClickedUser] = useState<UserType | null>(null);
-	const [contextUsername, setContextUsername] = useState(usernameFromCookie)
-	const [contextRole, setContextRole] = useState(roleFromCookie)
+	const [contextUsername, setContextUsername] = useState<string | null>(null);
+	const [contextRole, setContextRole] = useState<string | null>(null);
+	const [loadingUser, setLoadingUser] = useState(true);
+
+
 	//const [communities, setCommunities] = useState<CommunityType[]>([]);
 	
 
@@ -61,19 +64,26 @@ function App() {
 	//const baseurl = "http://localhost:3001";
 
 	useEffect(() => {
-		const fetchCurrentUser = async () => {
-			if (usernameFromCookie) {
-				try {
-					const response = await axios.get(`${baseurl}/users?username=${usernameFromCookie}`);
-					setCurrentUser(response.data);
-				} catch (error) {
-					console.error("Error fetching current user:", error);
-				}
-			}
-		};
+	const fetchCurrentUser = async () => {
+		try {
+			const response = await axios.get(`${baseurl}/users/me`, {
+				withCredentials: true,
+			});
 
-		fetchCurrentUser();
-	}, [usernameFromCookie]);
+			setCurrentUser(response.data);
+			setContextUsername(response.data.username);
+			setContextRole(response.data.role);
+		} catch (error) {
+			setCurrentUser(null);
+		} finally {
+			setLoadingUser(false);
+		}
+	};
+
+	fetchCurrentUser();
+}, []);
+
+
 
 	useEffect(() => {
 		const fetchChat = async () => {
@@ -81,6 +91,7 @@ function App() {
 				try {
 					const response = await axios.get(`${baseurl}/chats`, {
 						params: { user1: currentUser.id, user2: selectedUser.id },
+						withCredentials: true,
 					});
 					setChatId(response.data.chatId);
 				} catch (error) {
@@ -139,15 +150,15 @@ function App() {
 	};
 
 	const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-		const navigate = useNavigate();
-		useEffect(() => {
-			if (!currentUser) {
-				navigate("/login");
-			}
-		}, [/* currentUser, */ navigate]);
+	if (loadingUser) return null; // or spinner
 
-		return currentUser ? children : null;
-	};
+	if (!currentUser) {
+		return <Navigate to="/login" />;
+	}
+
+	return <>{children}</>;
+};
+
 
 	return (
 		<userContext.Provider value={{ 
@@ -181,13 +192,15 @@ function App() {
 							<Route path="register" element={<Register />} />
 						</Route>
 
-						<Route path="/chat/*" element={
-							<ProtectedRoute>
-								<ChatLayout />
-							</ProtectedRoute>
-						}>
-							{/* <Route path=":id" element={<Chat  />} /> */}
-						</Route>
+						<Route
+							path="/chat/*"
+							element={
+								<ProtectedRoute>
+									<ChatLayout />
+								</ProtectedRoute>
+							}
+						/>
+
 
 					</Routes>
 				</Router>

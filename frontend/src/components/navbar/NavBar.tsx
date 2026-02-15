@@ -80,7 +80,7 @@ const NavBar: React.FC<NavBarProps> = ({ currentUser }) => {
     document.cookie =
       "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     document.cookie = "role=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    setContextUsername(undefined);
+    setContextUsername(null);
     //setContextRole(undefined);
     //setCurrentUser(null);
     window.location.href = "/login";
