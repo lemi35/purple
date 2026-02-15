@@ -158,7 +158,7 @@ router.post("/login", async (req, res) => {
     // --- Set cookies for cross-origin ---
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: true,
+  	  secure: process.env.NODE_ENV === "production", // only HTTPS in production
       sameSite: "none",
       maxAge: 15 * 60 * 1000, // 15 min
       path: "/"
@@ -166,7 +166,7 @@ router.post("/login", async (req, res) => {
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: true,
+  	  secure: process.env.NODE_ENV === "production", // only HTTPS in production
       sameSite: "none",
       maxAge: 60 * 60 * 1000, // 1 hour
       path: "/"
@@ -201,7 +201,7 @@ router.post("/token", async (req, res) => {
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production", // only HTTPS in production
       sameSite: "none",
       maxAge: 15 * 60 * 1000,
       path: "/"

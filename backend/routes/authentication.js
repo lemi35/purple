@@ -130,7 +130,7 @@ router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, functio
                 profileImage: "url to profile image",
             },
         });
-        //console.log(`Created a new user: ${req.body.username} `);
+        console.log(`Created a new user: ${req.body.username} `);
         res.status(200).send(prismaUser);
     }
     catch (error) {
@@ -139,8 +139,8 @@ router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, functio
 }));
 router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("=== LOGIN REQUEST RECEIVED ===");
-    //console.log("Username:", req.body.username);
-    //console.log("Password provided:", !!req.body.password);
+    console.log("Username:", req.body.username);
+    console.log("Password provided:", !!req.body.password);
     const prismaUser = yield prisma.user.findUnique({
         where: {
             username: req.body.username,
@@ -166,13 +166,13 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
 
                 res.cookie("accessToken", accessToken, {
                 httpOnly: true,
-                secure: true,      // required on Render (HTTPS)
+  		        secure: process.env.NODE_ENV === "production", // only HTTPS in production
                 sameSite: "none",  // required for Pages → Render
                 maxAge: 15 * 60 * 1000
                 });
                 res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
-                secure: true,
+  		        secure: process.env.NODE_ENV === "production", // only HTTPS in production
                 sameSite: "none",
                 maxAge: 7 * 24 * 60 * 60 * 1000
                 });

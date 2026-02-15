@@ -66,7 +66,7 @@ export const authenticationMiddleware = async (
       // ✅ Set NEW access token cookie (IMPORTANT: proper options)
       res.cookie("accessToken", newAccessToken, {
         httpOnly: true,
-        secure: true,
+  		secure: process.env.NODE_ENV === "production", // only HTTPS in production
         sameSite: "none",
         path: "/",
         maxAge: 15 * 60 * 1000,
