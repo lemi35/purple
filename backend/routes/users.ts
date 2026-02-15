@@ -246,6 +246,9 @@ router.get("/authenticatedtest", authenticationMiddleware, async (req: Request, 
 router.get("/users/me", authenticationMiddleware, async (req: Request, res: Response) => {
 	console.log("Cookies:", req.cookies);
 	console.log("User from middleware:", req.user);
+	console.log("---- /me ROUTE HIT ----");
+  	console.log("req.user:", req.user);
+  	console.log("req.id:", req.id);
   try {
     if (!req.user) {
       return res.status(401).json({ message: "Not authenticated" });

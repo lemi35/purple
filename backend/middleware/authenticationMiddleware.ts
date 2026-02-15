@@ -25,6 +25,8 @@ export const authenticationMiddleware = async (
 
   const accessToken = req.cookies.accessToken;
   const refreshToken = req.cookies.refreshToken;
+  console.log("Access token:", accessToken);
+  console.log("Refresh token:", refreshToken);
 
   if (!accessToken) {
     return res.status(401).json({ message: "No access token" });
@@ -35,6 +37,7 @@ export const authenticationMiddleware = async (
       accessToken,
       process.env.ACCESS_TOKEN_SECRET as string
     ) as any;
+	console.log("DECODED TOKEN:", decoded);
 
     req.id = decoded.id;
     req.user = decoded.name;
@@ -61,7 +64,7 @@ export const authenticationMiddleware = async (
       const newAccessToken = generateAccessToken({
         name: user.username,
         id: user.id,
-        role: user.role,
+        role: user.role || undefined
       });
 
       // ✅ Set NEW access token cookie (IMPORTANT: proper options)
