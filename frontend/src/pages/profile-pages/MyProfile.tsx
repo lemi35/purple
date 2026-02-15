@@ -22,6 +22,7 @@ interface PostWithUser extends PostType {
 }
 
 const Profile = ({ currentUser }: MyProfileProps) => {
+  console.log("passed currentUser", currentUser?.username)
   //const [currentUser, setCurrentUser] = useState<UserType | null>(null);
   const [posts, setPosts] = useState<PostWithUser[]>([]);
   //const [loadingUser, setLoadingUser] = useState(true);
