@@ -234,6 +234,37 @@ exports.router.get("/admintest", adminCheckMiddleware_1.adminCheckMiddleware, (r
     const users = yield prisma.user.findMany({});
     res.send(users);
 }));
+exports.router.get("/me",
+  authenticationMiddleware_1.authenticationMiddleware, // makes sure user is logged in
+  async (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+      // req.user comes from the middleware (your JWT decoded username)
+      if (!req.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const user = yield prisma.user.findUnique({
+        where: { username: req.user },
+        select: {
+          id: true,
+          username: true,
+          role: true,
+          profileText: true,
+          profileImage: true,
+          profileBanner: true,
+        },
+      });
+
+      if (!user) return res.status(404).json({ message: "User not found" });
+
+      res.json(user);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Server error" });
+    }
+  })
+);
+
 exports.router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const users = yield prisma.user.findUnique({
         where: {
