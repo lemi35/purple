@@ -21,7 +21,7 @@ interface PostWithUser extends PostType {
   };
 }
 
-const Profile = ({ currentUser }: MyProfileProps) => {
+const MyProfile = ({ currentUser }: MyProfileProps) => {
   console.log("passed currentUser", currentUser?.username)
   //const [currentUser, setCurrentUser] = useState<UserType | null>(null);
   const [posts, setPosts] = useState<PostWithUser[]>([]);
@@ -177,4 +177,4 @@ const Profile = ({ currentUser }: MyProfileProps) => {
   );
 };
 
-export default Profile;
+export default MyProfile;
