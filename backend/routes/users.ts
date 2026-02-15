@@ -224,7 +224,26 @@ router.get("/authenticatedtest", authenticationMiddleware, async (req: Request, 
 }
 );
 
-router.get("/users/me", authenticationMiddleware, async (req: Request, res: Response) => {
+/**
+ * @swagger
+ * /users/me:
+ *   get:
+ *     summary: Get the current logged-in user
+ *     tags: [User]
+ *     security:
+ *       - cookieAuth: []   # indicates it uses cookies (accessToken)
+ *     responses:
+ *       200:
+ *         description: The current user's info
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Unauthorized, no valid access token
+ */
+
+router.get("/me", authenticationMiddleware, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "Not authenticated" });

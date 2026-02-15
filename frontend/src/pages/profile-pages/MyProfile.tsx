@@ -33,12 +33,39 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     fetchCurrentUser();
+    fetchCurrentUser2();
     getPosts();
   }, []);
 
   const fetchCurrentUser = async () => {
     try {
       const response = await fetch(`${baseurl}/users/me`, {
+        credentials: "include",
+      });
+
+      console.log("Status:", response.status);
+
+      if (!response.ok) {
+        const text = await response.text();
+        console.log("Error body:", text);
+        setCurrentUser(null);
+
+      } else {
+        const user = await response.json();
+        console.log("User from backend:", user);
+        setCurrentUser(user);
+      }
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      setCurrentUser(null);
+    } finally {
+      setLoadingUser(false);
+    }
+  };
+
+  const fetchCurrentUser2 = async () => {
+    try {
+      const response = await fetch(`${baseurl}/me`, {
         credentials: "include",
       });
 
