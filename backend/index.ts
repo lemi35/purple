@@ -9,12 +9,12 @@ import swaggerJsDoc from "swagger-jsdoc";
 const app = express();
 
 app.use(cors({
-  origin: "https://purple-b.pages.dev",
+  origin: "https://06990718.purple-b.pages.dev",
   credentials: true, // allow cookies
 }));
 
 app.options("*", cors({
-  origin: "https://purple-b.pages.dev",
+  origin: "https://06990718.purple-b.pages.dev",
   credentials: true,
 })); // respond to preflight
 
