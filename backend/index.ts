@@ -9,6 +9,7 @@ import swaggerJsDoc from "swagger-jsdoc";
 const app = express();
 
 const allowedOrigins = [
+  "https://3d8b527e.purple-b.pages.dev",
   "https://69c2ffca.purple-b.pages.dev", // your preview
   "https://purple-b.pages.dev",           // main site
 ];
