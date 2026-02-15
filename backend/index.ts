@@ -8,15 +8,21 @@ import swaggerUI from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
 const app = express();
 
-app.use(cors({
-  origin: "https://06990718.purple-b.pages.dev",
-  credentials: true, // allow cookies
-}));
+const allowedOrigins = [
+  "https://purple-b.pages.dev",
+  "https://06990718.purple-b.pages.dev"
+];
 
-app.options("*", cors({
-  origin: "https://06990718.purple-b.pages.dev",
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
-})); // respond to preflight
+}));
 
 import { router as usersRouter } from "./routes/users";
 import { router as postsRouter } from "./routes/posts";
