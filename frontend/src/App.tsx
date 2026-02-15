@@ -157,7 +157,9 @@ function App() {
 	}
 
 	return <>{children}</>;
-};
+	};
+
+	console.log("App currentUser:", currentUser);
 
 
 	return (
@@ -174,7 +176,7 @@ function App() {
 						<Route path="/" element={<Layout />}>
 							<Route path="/" element={<Home />} />
 							<Route path="profile/my"
-								element={<MyProfile currentUser={currentUser} />} />
+  								element={<MyProfile currentUser={{ username: "test" } as any} />} />
 							<Route path="profile/:id"
 								element={<UserProfile user={clickedUser} />} />
 							<Route path="friends" element={<Friends user={clickedUser} />} />
