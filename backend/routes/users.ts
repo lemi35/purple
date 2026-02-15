@@ -224,7 +224,7 @@ router.get("/authenticatedtest", authenticationMiddleware, async (req: Request, 
 }
 );
 
-router.get("users/me", authenticationMiddleware, async (req: Request, res: Response) => {
+router.get("/users/me", authenticationMiddleware, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "Not authenticated" });
