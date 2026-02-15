@@ -28,14 +28,23 @@ const generateRefreshToken = async (user: { name: string; id: number; role: stri
 
 // --- REGISTER ---
 router.post("/register", async (req, res) => {
+  console.log("REGISTER BODY:", req.body); // 👈 ADD THIS LINE
+
   const { username, password } = req.body;
-  if (!username || !password) return res.status(400).send("Username and password required");
+
+  if (!username || !password) {
+    return res.status(400).json({ message: "Username and password required" });
+  }
 
   try {
     const userExists = await prisma.user.findFirst({ where: { username } });
-    if (userExists) return res.status(400).send("This username already exists");
+
+    if (userExists) {
+      return res.status(400).json({ message: "This username already exists" });
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+
     const newUser = await prisma.user.create({
       data: {
         username,
@@ -46,12 +55,14 @@ router.post("/register", async (req, res) => {
       }
     });
 
-    res.status(201).json(newUser);
+    return res.status(201).json(newUser);
+
   } catch (err) {
     console.error(err);
-    res.status(500).send("Server error");
+    return res.status(500).json({ message: "Server error" });
   }
 });
+
 
 // --- LOGIN ---
 router.post("/login", async (req, res) => {
