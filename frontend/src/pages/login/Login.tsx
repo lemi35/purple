@@ -24,7 +24,7 @@ const Login = () => {
 
   console.log("LOGIN URL:", `${baseurl}/auth/login`);
 
-  
+
 
   // ✅ DO NOT USE null HERE
   const [username, setUsername] = useState("");
@@ -42,8 +42,12 @@ const Login = () => {
     }, 3000);
   };
 
+  console.log("Login Rendered");
+
   const handleLoginUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("LOGIN CLICKED / SUBMITTED");
+
 
     try {
       console.log("LOGIN STARTED");
