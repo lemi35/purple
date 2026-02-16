@@ -186,17 +186,6 @@ router.post("/login", async (req, res) => {
 });
 
 
-router.post("/logout", async (req, res) => {
-  try {
-    res.clearCookie("accessToken", { path: "/" });
-    res.clearCookie("refreshToken", { path: "/" });
-    return res.status(200).json({ message: "Logged out successfully" });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Logout failed" });
-  }
-});
-
 // --- REFRESH TOKEN ---
 router.post("/token", async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
