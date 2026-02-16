@@ -204,7 +204,7 @@ router.post("/token", async (req, res) => {
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // only HTTPS in production
-      sameSite: "none",
+      sameSite: "lax",
       maxAge: 15 * 60 * 1000,
       path: "/"
     });
