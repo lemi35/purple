@@ -8,15 +8,17 @@ interface UserContextType {
   setContextRole: React.Dispatch<React.SetStateAction<string | null>>;
   currentUser: UserType | null;
   setCurrentUser: React.Dispatch<React.SetStateAction<UserType | null>>;
+  logout: () => void;
 }
 
 const userContext = createContext<UserContextType>({
   contextUsername: null,
-  setContextUsername: () => {},
+  setContextUsername: () => { },
   contextRole: null,
-  setContextRole: () => {},
+  setContextRole: () => { },
   currentUser: null,
-  setCurrentUser: () => {},
+  setCurrentUser: () => { },
+  logout: () => { },
 });
 
 export default userContext;

@@ -27,7 +27,7 @@ const NavBar: React.FC<NavBarProps> = ({ currentUser }) => {
   if (!context) {
     throw new Error("NavBar must be used within a userContext.Provider");
   }
-  const { contextUsername, setContextUsername, /*contextRole, setContextRole*/ } =
+  const { contextUsername, /*setContextUsername, contextRole, setContextRole,*/ logout } =
     context;
   //const baseurl = "http://localhost:3001";
   const baseurl = import.meta.env.VITE_API_URL;
@@ -72,18 +72,9 @@ const NavBar: React.FC<NavBarProps> = ({ currentUser }) => {
     user.username.toLowerCase().includes(searchQuery.toLowerCase()),
   );*/
 
+
   const handleLogout = () => {
-    document.cookie =
-      "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie =
-      "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie =
-      "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "role=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    setContextUsername(null);
-    //setContextRole(undefined);
-    //setCurrentUser(null);
-    window.location.href = "/login";
+    logout();
   };
 
   return (

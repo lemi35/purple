@@ -79,7 +79,7 @@ const generateRefreshToken = async (user: { name: string; id: number; role: stri
 
 // --- REGISTER ---
 router.post("/register", async (req, res) => {
-  console.log("REGISTER BODY:", req.body); 
+  console.log("REGISTER BODY:", req.body);
 
   const { username, password } = req.body;
 
@@ -141,7 +141,7 @@ router.post("/register", async (req, res) => {
 
 // --- LOGIN ---
 router.post("/login", async (req, res) => {
-	console.log("LOGIN BODY:", req.body); 
+  console.log("LOGIN BODY:", req.body);
 
   const { username, password } = req.body;
   if (!username || !password) return res.status(400).send("Username and password required");
@@ -160,7 +160,7 @@ router.post("/login", async (req, res) => {
     // --- Set cookies for cross-origin ---
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-  	  secure: process.env.NODE_ENV === "production", // only HTTPS in production
+      secure: process.env.NODE_ENV === "production", // only HTTPS in production
       sameSite: "lax",
       maxAge: 15 * 60 * 1000, // 15 min
       path: "/"
@@ -168,7 +168,7 @@ router.post("/login", async (req, res) => {
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-  	  secure: process.env.NODE_ENV === "production", // only HTTPS in production
+      secure: process.env.NODE_ENV === "production", // only HTTPS in production
       sameSite: "lax",
       maxAge: 60 * 60 * 1000, // 1 hour
       path: "/"
@@ -185,6 +185,18 @@ router.post("/login", async (req, res) => {
   }
 });
 
+
+router.post("/logout", async (req: Request, res: Response) => {
+  try {
+    res.clearCookie("accessToken", { path: "/" });
+    res.clearCookie("refreshToken", { path: "/" });
+    return res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Logout failed" });
+  }
+});
+
 // --- REFRESH TOKEN ---
 router.post("/token", async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
@@ -195,8 +207,8 @@ router.post("/token", async (req, res) => {
     if (!user) return res.status(403).send("Invalid refresh token");
 
     if (new Date() > new Date(user.tokenExpire ?? 0)) {
-		return res.status(403).send("Refresh token expired");
-	}
+      return res.status(403).send("Refresh token expired");
+    }
 
     const tokenData = { name: user.username, id: user.id, role: user.role };
     const accessToken = generateAccessToken(tokenData);
@@ -214,4 +226,27 @@ router.post("/token", async (req, res) => {
     console.error(err);
     res.status(500).send("Server error");
   }
+});
+
+// --- LOGOUT ---
+router.post("/logout", (req, res) => {
+  console.log("Logged out user:", req.user);
+
+  res.cookie("accessToken", "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    expires: new Date(0)
+  });
+
+  res.cookie("refreshToken", "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    expires: new Date(0)
+  });
+
+  res.status(200).json({ message: "Logout successful" });
 });

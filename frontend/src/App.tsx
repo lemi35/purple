@@ -47,7 +47,7 @@ function App() {
 
 
 	//const [communities, setCommunities] = useState<CommunityType[]>([]);
-	
+
 
 
 	const handleUserSelect = (user: UserType) => {
@@ -58,30 +58,53 @@ function App() {
 		setClickedUser(user);
 	};
 
+	const handleLogout = async () => {
+		try {
+			console.log("Calling logout endpoint...");
+			await axios.post(`${baseurl}/auth/logout`, {}, {
+				withCredentials: true
+			});
+			console.log("Logout endpoint called successfully");
+		} catch (error) {
+			console.error("Logout failed", error);
+		}
+
+		// Clear local storage/state regardless of server response
+		document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+		document.cookie = "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+		document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+		document.cookie = "role=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+		setContextUsername(null);
+		setContextRole(null);
+		setCurrentUser(null);
+		window.location.href = "/login";
+	};
+
+
 
 	const baseurl = import.meta.env.VITE_API_URL;
 
 	//const baseurl = "http://localhost:3001";
 
 	useEffect(() => {
-	const fetchCurrentUser = async () => {
-		try {
-			const response = await axios.get(`${baseurl}/users/me`, {
-				withCredentials: true,
-			});
+		const fetchCurrentUser = async () => {
+			try {
+				const response = await axios.get(`${baseurl}/users/me`, {
+					withCredentials: true,
+				});
 
-			setCurrentUser(response.data);
-			setContextUsername(response.data.username);
-			setContextRole(response.data.role);
-		} catch (error) {
-			setCurrentUser(null);
-		} finally {
-			setLoadingUser(false);
-		}
-	};
+				setCurrentUser(response.data);
+				setContextUsername(response.data.username);
+				setContextRole(response.data.role);
+			} catch (error) {
+				setCurrentUser(null);
+			} finally {
+				setLoadingUser(false);
+			}
+		};
 
-	fetchCurrentUser();
-}, []);
+		fetchCurrentUser();
+	}, []);
 
 
 
@@ -150,13 +173,13 @@ function App() {
 	};
 
 	const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-	if (loadingUser) return null; // or spinner
+		if (loadingUser) return null; // or spinner
 
-	if (!currentUser) {
-		return <Navigate to="/login" />;
-	}
+		if (!currentUser) {
+			return <Navigate to="/login" />;
+		}
 
-	return <>{children}</>;
+		return <>{children}</>;
 	};
 
 	console.log("App currentUser:", currentUser);
@@ -164,20 +187,22 @@ function App() {
 
 
 	return (
-		<userContext.Provider value={{ 
-				contextUsername, 
-				setContextUsername, 
-				contextRole, 
-				setContextRole, 
-				currentUser, 
-				setCurrentUser }}>
+		<userContext.Provider value={{
+			contextUsername,
+			setContextUsername,
+			contextRole,
+			setContextRole,
+			currentUser,
+			setCurrentUser,
+			logout: handleLogout
+		}}>
 			<UsersProvider>
 				<Router>
 					<Routes>
 						<Route path="/" element={<Layout />}>
 							<Route path="/" element={<Home />} />
 							<Route path="profile/my"
-  								element={<MyProfile currentUser={{ username: "test" } as any} />} />
+								element={<MyProfile currentUser={currentUser} />} />
 							<Route path="profile/:id"
 								element={<UserProfile user={clickedUser} />} />
 							<Route path="friends" element={<Friends user={clickedUser} />} />
@@ -187,7 +212,7 @@ function App() {
 								element={
 									currentUser ? <ProfileUpdate currentUser={currentUser} /> : <Navigate to="/" />
 								}
-								/>
+							/>
 							<Route path="*" element={<div>Not Found</div>} />
 							<Route path="topic" element={< Topic />} />
 							<Route path="communities" element={<Community />} />

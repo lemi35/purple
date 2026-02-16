@@ -13,9 +13,9 @@ interface PostCreateProps {
 }
 
 export default function PostCreate({ refreshPosts }: PostCreateProps) {
-    const baseurl = import.meta.env.VITE_API_URL;
-    const [topics, setTopics] = useState<TopicType[]>([]);
-    const [post, setPost] = useState<PostType>({
+  const baseurl = import.meta.env.VITE_API_URL;
+  const [topics, setTopics] = useState<TopicType[]>([]);
+  const [post, setPost] = useState<PostType>({
     post_id: 0,
     user_id: 1,
     title: "",
@@ -60,10 +60,10 @@ export default function PostCreate({ refreshPosts }: PostCreateProps) {
   const createGeneralDiscussionTopic = async () => {
     try {
       const response = await axios.post(
-      `${baseurl}/topics`,
-      { title: "General Discussion" },
-      { withCredentials: true },
-    );
+        `${baseurl}/topics`,
+        { title: "General Discussion" },
+        { withCredentials: true },
+      );
       setTopics([...topics, response.data]);
     } catch (error) {
       console.error("Error creating General Discussion topic:", error);
@@ -89,59 +89,29 @@ export default function PostCreate({ refreshPosts }: PostCreateProps) {
 
     if (post.topic_id === 0) {
       const topic = topics.find((t) => t.title === post.topic);
-      if (topic) {
-        post.topic_id = topic.topic_id;
-      } else {
-        alert("Please select a topic before submitting.");
-        return;
-      }
+      if (!topic) return alert("Please select a topic.");
+      post.topic_id = topic.topic_id;
     }
 
     const formData = new FormData();
-    formData.append("title", post.title || "");
-    formData.append("content", post.content || "");
-    formData.append("user_id", post.user_id.toString());
-    formData.append("topic_id", post.topic_id.toString());
-    if (post.image) {
-      formData.append("image", post.image);
-    }
+    formData.append("title", post.title ?? "");
+    formData.append("content", post.content ?? "");
+    formData.append("topic_id", String(post.topic_id ?? 0));
+    if (post.image) formData.append("image", post.image);
 
     try {
-      const response = await axios.post(
-        baseurl,
-        formData,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        },
-      );
-      console.log("Post created successfully:", response.data);
-      setPost({
-        ...post,
-        title: "",
-        content: "",
-        image: null,
+      const response = await axios.post(`${baseurl}/posts`, formData, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" }
       });
+
+      console.log("Post created successfully:", response.data);
+      setPost({ ...post, title: "", content: "", image: null });
       refreshPosts();
       alert("Post created successfully!");
     } catch (error: any) {
-      console.error("=== ERROR CREATING POST ===");
-      console.error("Full error object:", error);
-      console.error("Error response data:", error.response?.data);
-      console.error("Error status:", error.response?.status);
-
-      let errorMessage = "Failed to create post";
-      if (error.response?.status === 401) {
-        errorMessage = "Authentication failed. Please try logging in again.";
-      } else if (error.response?.data) {
-        errorMessage = `Failed: ${error.response.data}`;
-      } else if (error.message) {
-        errorMessage = `Failed: ${error.message}`;
-      }
-
-      alert(errorMessage);
+      console.error("Error creating post:", error.response || error.message);
+      alert("Failed to create post");
     }
   };
 

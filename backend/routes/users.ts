@@ -243,36 +243,36 @@ router.get("/authenticatedtest", authenticationMiddleware, async (req: Request, 
  *         description: Unauthorized, no valid access token
  */
 
-router.get("/users/me", authenticationMiddleware, async (req: Request, res: Response) => {
+router.get("/me", authenticationMiddleware, async (req: Request, res: Response) => {
 	console.log("Cookies:", req.cookies);
 	console.log("User from middleware:", req.user);
 	console.log("---- /me ROUTE HIT ----");
-  	console.log("req.user:", req.user);
-  	console.log("req.id:", req.id);
-  try {
-    if (!req.user) {
-      return res.status(401).json({ message: "Not authenticated" });
-    }
+	console.log("req.user:", req.user);
+	console.log("req.id:", req.id);
+	try {
+		if (!req.user) {
+			return res.status(401).json({ message: "Not authenticated" });
+		}
 
-    const user = await prisma.user.findUnique({
-      where: { username: req.user },
-      select: {
-        id: true,
-        username: true,
-        role: true,
-        profileText: true,
-        profileImage: true,
-        profileBanner: true
-      },
-    });
+		const user = await prisma.user.findUnique({
+			where: { username: req.user },
+			select: {
+				id: true,
+				username: true,
+				role: true,
+				profileText: true,
+				profileImage: true,
+				profileBanner: true
+			},
+		});
 
-    if (!user) return res.status(404).json({ message: "User not found" });
+		if (!user) return res.status(404).json({ message: "User not found" });
 
-    res.json(user);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Server error" });
-  }
+		res.json(user);
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: "Server error" });
+	}
 });
 
 router.get(

@@ -1,11 +1,13 @@
 
+import { useContext } from "react";
+import userContext from "../../contexts/UserContext";
 import Icon from '@mdi/react';
 import {
-  mdiHomeOutline,
-  mdiAccountOutline,
-  mdiAccountMultipleOutline,
-  mdiAccountSearch,
-  mdiAccountGroupOutline,
+    mdiHomeOutline,
+    mdiAccountOutline,
+    mdiAccountMultipleOutline,
+    mdiAccountSearch,
+    mdiAccountGroupOutline,
 } from '@mdi/js';
 import { Link } from "react-router-dom";
 import "./leftBar.scss";
@@ -14,7 +16,8 @@ import axios from 'axios';
 import CommunityType from '../../types/CommunityType';
 
 const LeftBar = () => {
-	const baseurl = import.meta.env.VITE_API_URL;
+    const { currentUser, logout } = useContext(userContext);
+    const baseurl = import.meta.env.VITE_API_URL;
     //const baseurl = "http://localhost:3001"
     const [/*topics*/, setTopics] = useState([])
     const [/*communities*/, setCommunities] = useState<CommunityType[]>([])
@@ -28,16 +31,16 @@ const LeftBar = () => {
     }, [])
 
     useEffect(() => {
-    const fetchCommunities = async () => {
-      try {
-        const response = await axios.get<CommunityType[]>(`${baseurl}/communities`);
-        setCommunities(response.data);
-      } catch (error) {
-        console.error("Error fetching communities:", error);
-      }
-    };
-    fetchCommunities();
-  }, []);
+        const fetchCommunities = async () => {
+            try {
+                const response = await axios.get<CommunityType[]>(`${baseurl}/communities`);
+                setCommunities(response.data);
+            } catch (error) {
+                console.error("Error fetching communities:", error);
+            }
+        };
+        fetchCommunities();
+    }, []);
 
     return (
         <div className="leftBar">
@@ -51,7 +54,7 @@ const LeftBar = () => {
                     </div>
                     <div className="item">
                         <Link to="/profile/my">
-                            <Icon path={mdiAccountOutline} size={1}/>
+                            <Icon path={mdiAccountOutline} size={1} />
                             <span>My Profile</span>
                         </Link>
                     </div>
@@ -61,41 +64,52 @@ const LeftBar = () => {
                             <span>Friends</span>
                         </Link>
                     </div>
-                   
+
                 </div>
 
-                <hr/>
+                <hr />
 
                 <div className='menu'>
                     <div className="item">
                         <Link to="/topic">
-                        <Icon path={mdiAccountSearch} size={1} />
+                            <Icon path={mdiAccountSearch} size={1} />
                             <span>Topics</span>
-                        </Link>                    
+                        </Link>
                     </div>
                     <div className="item">
                         <Link to="/communities">
-                        <Icon path={mdiAccountGroupOutline} size={1} />
+                            <Icon path={mdiAccountGroupOutline} size={1} />
                             <span>Groups</span>
-                        </Link>                    
+                        </Link>
                     </div>
-                    
+
                 </div>
                 <hr />
                 <div className='menu'>
-                    <div className="item">
-                        <Link to="/login">
-                            <Icon path={mdiAccountOutline} size={1} />
-                                <span>Login</span>
-                        </Link>
-                    </div>   
-                    <div className='item'>
-                        <Link to="/register">
-                            <Icon path={mdiAccountOutline} size={1} />
-                                <span>Register</span>  
-                        </Link>                        
-                    </div>
-                    
+                    {!currentUser ? (
+                        <>
+                            <div className="item">
+                                <Link to="/login">
+                                    <Icon path={mdiAccountOutline} size={1} />
+                                    <span>Login</span>
+                                </Link>
+                            </div>
+                            <div className='item'>
+                                <Link to="/register">
+                                    <Icon path={mdiAccountOutline} size={1} />
+                                    <span>Register</span>
+                                </Link>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="item">
+                            <Link to="#" onClick={logout}>
+                                <Icon path={mdiAccountOutline} size={1} />
+                                <span>Logout</span>
+                            </Link>
+                        </div>
+                    )}
+
                 </div>
             </div>
         </div>
