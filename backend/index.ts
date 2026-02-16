@@ -8,28 +8,23 @@ import swaggerUI from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
 const app = express();
 
-/*const allowedOrigins = [
+const allowedOrigins = [
   "http://localhost:5173",
-  "https://3d8b527e.purple-b.pages.dev",
-  "https://69c2ffca.purple-b.pages.dev", 
-  "https://purple-b.pages.dev",           
-];*/
+  "https://purple-b.pages.dev"
+];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-
-    if (
-      origin.startsWith("http://localhost") ||
-      origin.endsWith(".purple-b.pages.dev")
-    ) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
 
 import { router as usersRouter } from "./routes/users";
