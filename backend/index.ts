@@ -16,19 +16,19 @@ const allowedOrigins = [
 app.use(
 	cors({
 		origin: (origin, callback) => {
-			// allow requests with no origin like mobile apps or Postman
-			if (!origin || allowedOrigins.includes(origin)) {
+			if (
+				!origin ||
+				allowedOrigins.includes(origin) ||
+				origin.endsWith(".purple-b.pages.dev")
+			) {
 				callback(null, true);
 			} else {
 				callback(new Error("Not allowed by CORS"));
 			}
 		},
-		credentials: true,
-		methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-		allowedHeaders: ["Content-Type", "Authorization"]
+		credentials: true
 	})
 );
-
 app.options("*", cors());
 
 
