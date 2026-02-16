@@ -1,4 +1,5 @@
 # Purple - Social Media Application
+deployed: https://26a8c32a.purple-b.pages.dev/
 
 A full-stack social media application built with React, Node.js, Express, and Prisma.
 
