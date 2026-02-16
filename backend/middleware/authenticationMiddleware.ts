@@ -80,6 +80,8 @@ export const authenticationMiddleware = async (
       req.id = user.id;
       req.role = user.role || undefined;
 
+	  console.log("REFRESH SUCCESS, USER:", req.user);
+
       return next();
     } catch (err) {
       return res.status(401).json({ message: "Refresh failed" });
