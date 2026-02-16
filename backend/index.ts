@@ -10,12 +10,13 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://purple-b.pages.dev"
+  "https://purple-b.pages.dev" 
 ];
 
 app.use(
   cors({
-    origin: function (origin, callback) {
+    origin: (origin, callback) => {
+      // allow requests with no origin like mobile apps or Postman
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -23,9 +24,12 @@ app.use(
       }
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
 
+app.options("*", cors());
 
 
 
