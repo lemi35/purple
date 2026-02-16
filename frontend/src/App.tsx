@@ -160,6 +160,7 @@ function App() {
 	};
 
 	console.log("App currentUser:", currentUser);
+	console.log("BASE URL:", baseurl);
 
 
 	return (
