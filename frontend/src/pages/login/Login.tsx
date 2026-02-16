@@ -18,7 +18,13 @@ const Login = () => {
   } = context;
 
   const navigate = useNavigate();
+
+  //const baseurl = "http://localhost:3001"
   const baseurl = import.meta.env.VITE_API_URL;
+
+  console.log("LOGIN URL:", `${baseurl}/auth/login`);
+
+  
 
   // ✅ DO NOT USE null HERE
   const [username, setUsername] = useState("");

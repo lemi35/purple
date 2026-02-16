@@ -7,8 +7,10 @@ import "./community.scss"
 
 
 const Community = () => {
+
   const baseurl = import.meta.env.VITE_API_URL;
   //const baseurl = "http://localhost:3001"
+
   const [communities, setCommunities] = useState<CommunityType[]>([]);
 
   useEffect(() => {
