@@ -284,7 +284,7 @@ router.get(
 	}
 );
 
-
+/*
 router.get("/:id", async (req: Request, res: Response) => {
 	const users = await prisma.user.findUnique({
 		where: {
@@ -298,7 +298,23 @@ router.get("/:id", async (req: Request, res: Response) => {
 		res.status(404).send("User not found");
 	}
 });
+*/
 
+router.get("/:id", async (req: Request, res: Response) => {
+	const id = Number(req.params.id);
+	if (!id) return res.status(400).json({ message: "User ID is required and must be a number" });
+
+	try {
+		const user = await prisma.user.findUnique({
+			where: { id }
+		});
+		if (!user) return res.status(404).json({ message: "User not found" });
+		res.json(user);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ message: "Server error" });
+	}
+});
 
 
 
@@ -414,19 +430,17 @@ router.put("/:id", upload.fields([{ name: 'profileImage', maxCount: 1 }, { name:
 });
 
 router.delete("/remove", authenticationMiddleware, async (req: Request, res: Response) => {
-	console.log(req.user)
 	try {
-		const users = await prisma.user.delete({
-			where: {
-				username: req.user
-			}
+		const user = await prisma.user.delete({
+			where: { username: req.user } // safe
 		});
-		res.send(users);
+		res.json(user);
 	} catch (error) {
-		console.log(error);
-		res.status(404).send(error);
+		console.error(error);
+		res.status(404).json({ message: "User not found" });
 	}
 });
+
 
 
 router.delete("/:id", async (req: Request, res: Response) => {
