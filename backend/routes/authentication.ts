@@ -161,7 +161,7 @@ router.post("/login", async (req, res) => {
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
   	  secure: process.env.NODE_ENV === "production", // only HTTPS in production
-      sameSite: "none",
+      sameSite: "lax",
       maxAge: 15 * 60 * 1000, // 15 min
       path: "/"
     });
@@ -169,7 +169,7 @@ router.post("/login", async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
   	  secure: process.env.NODE_ENV === "production", // only HTTPS in production
-      sameSite: "none",
+      sameSite: "lax",
       maxAge: 60 * 60 * 1000, // 1 hour
       path: "/"
     });
