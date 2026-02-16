@@ -67,14 +67,15 @@ export const authenticationMiddleware = async (
         role: user.role || undefined
       });
 
-      // ✅ Set NEW access token cookie (IMPORTANT: proper options)
-      res.cookie("accessToken", newAccessToken, {
-        httpOnly: true,
-  		secure: false,
-        sameSite: "none",
-        path: "/",
-        maxAge: 15 * 60 * 1000,
-      });
+      const isProduction = process.env.NODE_ENV === "production";
+
+	res.cookie("accessToken", newAccessToken, {
+		httpOnly: true,
+		secure: isProduction,   // true on HTTPS prod
+		sameSite: "none",
+		path: "/",
+		maxAge: 15 * 60 * 1000,
+	});
 
       req.user = user.username;
       req.id = user.id;

@@ -8,7 +8,7 @@ import swaggerUI from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
 const app = express();
 
-/*const allowedOrigins = [
+const allowedOrigins = [
   "http://localhost:5173",
   "https://purple-b.pages.dev"
 ];
@@ -24,14 +24,9 @@ app.use(
     },
     credentials: true,
   })
-);*/
-
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-  })
 );
+
+
 
 
 import { router as usersRouter } from "./routes/users";
