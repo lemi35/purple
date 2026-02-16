@@ -13,7 +13,7 @@ A full-stack social media application built with React, Node.js, Express, and Pr
 ### Prerequisites
 
 - Node.js (v16+)
-- MySQL Database
+- PostgreSQL Database
 
 ### Backend Setup
 
@@ -28,7 +28,7 @@ A full-stack social media application built with React, Node.js, Express, and Pr
 3.  Create a `.env` file in the `backend` directory with the following variables:
     ```env
     PORT=3001
-    DATABASE_URL="mysql://USER:PASSWORD@HOST:PORT/DATABASE"
+    DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
     ACCESS_TOKEN_SECRET="your_access_token_secret"
     REFRESH_TOKEN_SECRET="your_refresh_token_secret"
     NODE_ENV="development" # Set to "production" when deploying
